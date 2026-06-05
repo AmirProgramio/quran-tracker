@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Holy Qur'an Memorization Tracker — Amir &amp; Farah</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #f5f0e0;
+      --cream-dark: #ede6ce;
+      --cream-mid: #f0ead4;
+      --green-dark: #1a4a2e;
+      --green-mid: #2d6e47;
+      --green-light: #3a8a5a;
+      --teal-dark: #0d5c54;
+      --teal-mid: #1a7a6e;
+      --teal-light: #2a9e8e;
+      --gold: #c9941a;
+      --gold-light: #e6b84a;
+      --text-dark: #2a2017;
+      --text-mid: #5a4e38;
+      --text-light: #8a7a60;
+      --border: #d4c49a;
+      --shadow: rgba(26,74,46,0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--cream);
+      font-family: 'Inter', sans-serif;
+      color: var(--text-dark);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .page-header {
+      background: var(--cream);
+      border: 3px solid var(--green-dark);
+      border-radius: 4px;
+      margin: 20px auto;
+      max-width: 1200px;
+      padding: 40px 60px 36px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 4px 20px var(--shadow);
+    }
+
+    .corner-star {
+      position: absolute;
+      width: 28px; height: 28px;
+      fill: var(--gold);
+    }
+    .corner-star.tl { top: 10px; left: 10px; }
+    .corner-star.tr { top: 10px; right: 10px; }
+    .corner-star.bl { bottom: 10px; left: 10px; }
+    .corner-star.br { bottom: 10px; right: 10px; }
+
+    .mosque-icon {
+      width: 110px; height: 110px;
+      margin: 0 auto 20px;
+      display: block;
+    }
+
+    .bismillah-arabic {
+      font-family: 'Amiri', serif;
+      font-size: 2.8rem;
+      color: var(--green-dark);
+      direction: rtl;
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+
+    .bismillah-english {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--text-mid);
+      margin-bottom: 18px;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      margin: 14px 0;
+    }
+    .divider-line {
+      flex: 1;
+      max-width: 200px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold));
+    }
+    .divider-line.right {
+      background: linear-gradient(to left, transparent, var(--gold));
+    }
+    .divider-star { font-size: 1.1rem; color: var(--gold); }
+
+    .main-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--gold);
+      margin-bottom: 28px;
+    }
+
+    /* ── INFO CARDS ── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      text-align: left;
+      margin-bottom: 28px;
+    }
+
+    .info-card {
+      background: rgba(255,255,255,0.5);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 18px 20px;
+    }
+
+    .info-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .info-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 6px;
+      font-size: 0.88rem;
+    }
+    .info-label { font-weight: 600; color: var(--text-dark); min-width: 80px; }
+    .info-text { color: var(--text-mid); }
+
+    .legend {
+      font-size: 0.82rem;
+      color: var(--text-light);
+      font-style: italic;
+      margin-top: 10px;
+    }
+
+    /* ── PROGRESS CARD ── */
+    .progress-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .progress-person {
+      margin-bottom: 10px;
+    }
+
+    .progress-person-label {
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+    .progress-person-label.amir { color: var(--green-dark); }
+    .progress-person-label.farah { color: var(--teal-dark); }
+
+    .progress-stats {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .progress-count {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .progress-count.amir { color: var(--green-mid); }
+    .progress-count.farah { color: var(--teal-mid); }
+
+    .progress-of { font-size: 0.8rem; color: var(--text-light); }
+
+    .progress-bar-track {
+      height: 6px;
+      background: var(--cream-dark);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+    .progress-bar-fill.amir { background: var(--green-mid); }
+    .progress-bar-fill.farah { background: var(--teal-mid); }
+
+    .started-row {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .started-input {
+      border: 1px solid var(--border);
+      background: white;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.8rem;
+      color: var(--text-dark);
+      width: 130px;
+    }
+
+    .quran-quote {
+      margin-top: 20px;
+    }
+    .quran-quote-arabic {
+      font-family: 'Amiri', serif;
+      font-size: 1.8rem;
+      color: var(--green-dark);
+      direction: rtl;
+    }
+    .quran-quote-english {
+      font-size: 0.88rem;
+      font-style: italic;
+      color: var(--text-mid);
+      margin-top: 4px;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main-content {
+      max-width: 1200px;
+      margin: 0 auto 30px;
+      padding: 0 20px;
+    }
+
+    /* ── TOOLBAR ── */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 200px;
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.88rem;
+      background: white;
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: var(--green-mid); }
+
+    .filter-btn {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: white;
+      font-size: 0.82rem;
+      cursor: pointer;
+      color: var(--text-mid);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .filter-btn:hover { border-color: var(--green-mid); color: var(--green-dark); }
+    .filter-btn.active { background: var(--green-dark); color: white; border-color: var(--green-dark); }
+
+    .reset-btn {
+      padding: 8px 14px;
+      border: 1px solid #e0c4c4;
+      border-radius: 6px;
+      background: white;
+      font-size: 0.82rem;
+      cursor: pointer;
+      color: #a06060;
+      transition: all 0.2s;
+    }
+    .reset-btn:hover { background: #fff0f0; }
+
+    /* ── TABLE ── */
+    .table-wrapper {
+      border: 2px solid var(--green-dark);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 2px 16px var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead tr {
+      background: var(--green-dark);
+      color: white;
+    }
+
+    .th-group {
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      padding: 8px 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    .th-group.amir-group { background: rgba(255,255,255,0.08); }
+    .th-group.farah-group { background: rgba(255,255,255,0.04); }
+
+    th {
+      padding: 8px 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-align: center;
+      white-space: nowrap;
+    }
+    th.left { text-align: left; }
+
+    td {
+      padding: 10px 8px;
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    tr:nth-child(even) td { background: var(--cream-mid); }
+    tr:nth-child(odd) td { background: var(--cream); }
+
+    tr:hover td { background: #e8f0ec !important; transition: background 0.15s; }
+
+    tr.hidden { display: none; }
+
+    .td-num {
+      text-align: center;
+      font-weight: 600;
+      color: var(--gold);
+      width: 40px;
+      font-size: 0.82rem;
+    }
+
+    .td-arabic {
+      font-family: 'Amiri', serif;
+      font-size: 1.1rem;
+      text-align: right;
+      direction: rtl;
+      color: var(--text-dark);
+      min-width: 100px;
+    }
+
+    .td-name {
+      font-weight: 600;
+      color: var(--green-dark);
+      min-width: 130px;
+    }
+
+    .td-meaning {
+      color: var(--text-mid);
+      min-width: 120px;
+    }
+
+    .td-ayat {
+      text-align: center;
+      font-weight: 500;
+      color: var(--text-mid);
+      width: 50px;
+    }
+
+    .td-check {
+      text-align: center;
+      width: 44px;
+    }
+
+    .td-notes {
+      min-width: 140px;
+    }
+
+    /* ── CHECKBOXES ── */
+    .custom-checkbox {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid;
+      border-radius: 3px;
+      cursor: pointer;
+      display: inline-block;
+      vertical-align: middle;
+      position: relative;
+      transition: all 0.15s;
+      background: white;
+    }
+
+    .custom-checkbox.amir-read {
+      border-color: var(--green-mid);
+    }
+    .custom-checkbox.amir-mem {
+      border-color: var(--green-dark);
+    }
+    .custom-checkbox.farah-read {
+      border-color: var(--teal-mid);
+    }
+    .custom-checkbox.farah-mem {
+      border-color: var(--teal-dark);
+    }
+
+    .custom-checkbox.amir-read:checked {
+      background: var(--green-mid);
+      border-color: var(--green-mid);
+    }
+    .custom-checkbox.amir-mem:checked {
+      background: var(--green-dark);
+      border-color: var(--green-dark);
+    }
+    .custom-checkbox.farah-read:checked {
+      background: var(--teal-mid);
+      border-color: var(--teal-mid);
+    }
+    .custom-checkbox.farah-mem:checked {
+      background: var(--teal-dark);
+      border-color: var(--teal-dark);
+    }
+
+    .custom-checkbox:checked::after {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 1px;
+      width: 6px;
+      height: 10px;
+      border: 2px solid white;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg);
+    }
+
+    .custom-checkbox:hover:not(:checked) {
+      background: var(--cream-mid);
+    }
+
+    /* ── NOTES INPUT ── */
+    .notes-input {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-size: 0.8rem;
+      color: var(--text-mid);
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      padding: 2px 4px;
+      border-bottom: 1px dashed var(--border);
+      transition: border-color 0.2s;
+    }
+    .notes-input:focus {
+      border-bottom-color: var(--green-mid);
+      background: rgba(255,255,255,0.6);
+    }
+    .notes-input::placeholder { color: var(--border); }
+
+    /* ── FOOTER ── */
+    .page-footer {
+      max-width: 1200px;
+      margin: 0 auto 30px;
+      padding: 0 20px;
+      text-align: center;
+    }
+
+    .footer-inner {
+      border: 2px solid var(--green-dark);
+      border-radius: 6px;
+      padding: 28px 40px;
+      background: var(--cream);
+      position: relative;
+    }
+
+    .footer-dua-arabic {
+      font-family: 'Amiri', serif;
+      font-size: 1.4rem;
+      color: var(--text-mid);
+      font-style: italic;
+    }
+
+    .footer-ameen {
+      font-family: 'Amiri', serif;
+      font-size: 2rem;
+      color: var(--green-dark);
+      margin-top: 8px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .page-header { padding: 24px 20px; margin: 10px; }
+      .main-title { font-size: 1.8rem; }
+      .bismillah-arabic { font-size: 2rem; }
+      .info-grid { grid-template-columns: 1fr; }
+      .main-content { padding: 0 10px; }
+      .td-arabic { min-width: 80px; font-size: 0.95rem; }
+      .td-notes { display: none; }
+    }
+
+    @media print {
+      .toolbar { display: none; }
+      .search-input { display: none; }
+      tr.hidden { display: table-row !important; }
+      body { background: white; }
+      .page-header { box-shadow: none; border: 2px solid var(--green-dark); }
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--green-dark);
+      color: white;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s;
+      pointer-events: none;
+      z-index: 100;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="page-header">
+  <!-- Corner stars -->
+  <svg class="corner-star tl" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+  <svg class="corner-star tr" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+  <svg class="corner-star bl" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+  <svg class="corner-star br" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+
+  <!-- Mosque icon -->
+  <svg class="mosque-icon" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="60" cy="60" r="56" stroke="#1a4a2e" stroke-width="2.5"/>
+    <!-- Main dome -->
+    <path d="M36 72 Q36 48 60 44 Q84 48 84 72 Z" fill="#1a4a2e"/>
+    <!-- Main dome highlight -->
+    <path d="M44 72 Q44 54 60 50 Q76 54 76 72 Z" fill="#2d6e47"/>
+    <!-- Left minaret -->
+    <rect x="26" y="56" width="10" height="16" rx="1" fill="#1a4a2e"/>
+    <path d="M26 56 Q31 50 36 56 Z" fill="#1a4a2e"/>
+    <rect x="29" y="49" width="4" height="8" rx="2" fill="#1a4a2e"/>
+    <circle cx="31" cy="48" r="2" fill="#c9941a"/>
+    <!-- Right minaret -->
+    <rect x="84" y="56" width="10" height="16" rx="1" fill="#1a4a2e"/>
+    <path d="M84 56 Q89 50 94 56 Z" fill="#1a4a2e"/>
+    <rect x="87" y="49" width="4" height="8" rx="2" fill="#1a4a2e"/>
+    <circle cx="89" cy="48" r="2" fill="#c9941a"/>
+    <!-- Door -->
+    <path d="M52 72 Q52 63 60 62 Q68 63 68 72 Z" fill="#0d3320"/>
+    <!-- Crescent -->
+    <path d="M57 38 Q60 34 64 37 Q61 35 58 39 Z" fill="#c9941a"/>
+    <!-- Stars -->
+    <circle cx="45" cy="36" r="1.5" fill="#c9941a"/>
+    <circle cx="75" cy="36" r="1.5" fill="#c9941a"/>
+    <circle cx="60" cy="30" r="1.5" fill="#c9941a"/>
+    <!-- Base -->
+    <rect x="24" y="72" width="72" height="4" rx="2" fill="#1a4a2e"/>
+  </svg>
+
+  <div class="bismillah-arabic">بِسْمِ اللهَِّ الرَّحْمَٰنِ الرَّحِيمِ</div>
+  <div class="bismillah-english">In the name of Allah, the Most Gracious, the Most Merciful</div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <span class="divider-star">✦</span>
+    <div class="divider-line right"></div>
+  </div>
+
+  <div class="main-title">Holy Qur'an Memorization Tracker</div>
+  <div class="subtitle">All 114 Surahs &bull; Prepared for Amir &amp; Farah</div>
+
+  <div class="info-grid">
+    <!-- Instructions -->
+    <div class="info-card">
+      <h3>How to use this tracker</h3>
+      <div class="info-row">
+        <span class="info-label">Read:</span>
+        <span class="info-text">Tick once you have correctly recited / reviewed the surah.</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Memorized:</span>
+        <span class="info-text">Tick once it is committed to heart (hifz).</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Notes:</span>
+        <span class="info-text">Jot tajweed reminders, dates, or difficult ayat.</span>
+      </div>
+      <div class="legend">Amir = green checkboxes &nbsp;&nbsp; Farah = teal checkboxes</div>
+    </div>
+
+    <!-- Progress -->
+    <div class="info-card">
+      <h3>Our progress</h3>
+      <div class="progress-person">
+        <div class="progress-person-label amir">Amir</div>
+        <div class="progress-stats">
+          <span class="progress-count amir" id="amir-count">0</span>
+          <span class="progress-of">/ 114 surahs memorized</span>
+        </div>
+        <div class="progress-bar-track"><div class="progress-bar-fill amir" id="amir-bar" style="width:0%"></div></div>
+        <div class="started-row">
+          Started: <input type="date" class="started-input" id="amir-started" placeholder="Pick a date">
+        </div>
+      </div>
+      <div class="progress-person">
+        <div class="progress-person-label farah">Farah</div>
+        <div class="progress-stats">
+          <span class="progress-count farah" id="farah-count">0</span>
+          <span class="progress-of">/ 114 surahs memorized</span>
+        </div>
+        <div class="progress-bar-track"><div class="progress-bar-fill farah" id="farah-bar" style="width:0%"></div></div>
+        <div class="started-row">
+          Started: <input type="date" class="started-input" id="farah-started" placeholder="Pick a date">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quran-quote">
+    <div class="quran-quote-arabic">رَبِّ زِدْنِي عِلْمًا</div>
+    <div class="quran-quote-english">"My Lord, increase me in knowledge." (Qur'an 20:114)</div>
+  </div>
+</header>
+
+<!-- MAIN TABLE -->
+<main class="main-content">
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <input type="text" class="search-input" id="search" placeholder="Search surah name, meaning or number…">
+    <button class="filter-btn active" data-filter="all">All (114)</button>
+    <button class="filter-btn" data-filter="amir-mem">Amir Memorized</button>
+    <button class="filter-btn" data-filter="farah-mem">Farah Memorized</button>
+    <button class="filter-btn" data-filter="neither-mem">Not Yet Memorized</button>
+    <button class="reset-btn" id="reset-btn" title="Clear all checkboxes and notes">Reset All</button>
+  </div>
+
+  <div class="table-wrapper">
+    <table id="surah-table">
+      <colgroup>
+        <col style="width:40px">
+        <col style="width:110px">
+        <col style="width:140px">
+        <col>
+        <col style="width:50px">
+        <!-- Amir -->
+        <col style="width:44px">
+        <col style="width:44px">
+        <!-- Farah -->
+        <col style="width:44px">
+        <col style="width:44px">
+        <!-- Notes -->
+        <col>
+      </colgroup>
+      <thead>
+        <tr>
+          <th rowspan="2" class="left" style="padding-left:12px">#</th>
+          <th rowspan="2">Surah</th>
+          <th rowspan="2" class="left">Name</th>
+          <th rowspan="2" class="left">Meaning</th>
+          <th rowspan="2">Ayat</th>
+          <th colspan="2" class="th-group amir-group">AMIR</th>
+          <th colspan="2" class="th-group farah-group">FARAH</th>
+          <th rowspan="2" class="left">Notes</th>
+        </tr>
+        <tr>
+          <th>Read</th><th>Mem</th>
+          <th>Read</th><th>Mem</th>
+        </tr>
+      </thead>
+      <tbody id="surah-tbody">
+        <!-- Rows generated by JS -->
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="page-footer">
+  <div class="footer-inner">
+    <svg class="corner-star tl" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+    <svg class="corner-star tr" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+    <div class="divider"><div class="divider-line"></div><span class="divider-star">✦</span><div class="divider-line right"></div></div>
+    <div class="footer-dua-arabic">May Allah place the Qur'an in your hearts and make it a light upon your path.</div>
+    <div class="footer-ameen">آمِين</div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SURAHS = [
+  [1,"الفاتحة","Al-Fatihah","The Opening",7],
+  [2,"البقرة","Al-Baqarah","The Cow",286],
+  [3,"آل عمران","Aal-'Imran","Family of Imran",200],
+  [4,"النساء","An-Nisa'","The Women",176],
+  [5,"المائدة","Al-Ma'idah","The Table Spread",120],
+  [6,"الأنعام","Al-An'am","The Cattle",165],
+  [7,"الأعراف","Al-A'raf","The Heights",206],
+  [8,"الأنفال","Al-Anfal","The Spoils of War",75],
+  [9,"التوبة","At-Tawbah","The Repentance",129],
+  [10,"يونس","Yunus","Jonah",109],
+  [11,"هود","Hud","Hud",123],
+  [12,"يوسف","Yusuf","Joseph",111],
+  [13,"الرعد","Ar-Ra'd","The Thunder",43],
+  [14,"إبراهيم","Ibrahim","Abraham",52],
+  [15,"الحجر","Al-Hijr","The Rocky Tract",99],
+  [16,"النحل","An-Nahl","The Bee",128],
+  [17,"الإسراء","Al-Isra'","The Night Journey",111],
+  [18,"الكهف","Al-Kahf","The Cave",110],
+  [19,"مريم","Maryam","Mary",98],
+  [20,"طه","Ta-Ha","Ta-Ha",135],
+  [21,"الأنبياء","Al-Anbiya'","The Prophets",112],
+  [22,"الحج","Al-Hajj","The Pilgrimage",78],
+  [23,"المؤمنون","Al-Mu'minun","The Believers",118],
+  [24,"النور","An-Nur","The Light",64],
+  [25,"الفرقان","Al-Furqan","The Criterion",77],
+  [26,"الشعراء","Ash-Shu'ara'","The Poets",227],
+  [27,"النمل","An-Naml","The Ant",93],
+  [28,"القصص","Al-Qasas","The Stories",88],
+  [29,"العنكبوت","Al-'Ankabut","The Spider",69],
+  [30,"الروم","Ar-Rum","The Romans",60],
+  [31,"لقمان","Luqman","Luqman",34],
+  [32,"السجدة","As-Sajdah","The Prostration",30],
+  [33,"الأحزاب","Al-Ahzab","The Combined Forces",73],
+  [34,"سبأ","Saba'","Sheba",54],
+  [35,"فاطر","Fatir","Originator",45],
+  [36,"يس","Ya-Sin","Ya Sin",83],
+  [37,"الصافات","As-Saffat","Those in Ranks",182],
+  [38,"ص","Sad","Sad",88],
+  [39,"الزمر","Az-Zumar","The Troops",75],
+  [40,"غافر","Ghafir","The Forgiver",85],
+  [41,"فصلت","Fussilat","Explained in Detail",54],
+  [42,"الشورى","Ash-Shura","The Consultation",53],
+  [43,"الزخرف","Az-Zukhruf","Gold Adornments",89],
+  [44,"الدخان","Ad-Dukhan","The Smoke",59],
+  [45,"الجاثية","Al-Jathiyah","The Crouching",37],
+  [46,"الأحقاف","Al-Ahqaf","The Sand-Dunes",35],
+  [47,"محمد","Muhammad","Muhammad",38],
+  [48,"الفتح","Al-Fath","The Victory",29],
+  [49,"الحجرات","Al-Hujurat","The Rooms",18],
+  [50,"ق","Qaf","Qaf",45],
+  [51,"الذاريات","Adh-Dhariyat","The Winnowing Winds",60],
+  [52,"الطور","At-Tur","The Mount",49],
+  [53,"النجم","An-Najm","The Star",62],
+  [54,"القمر","Al-Qamar","The Moon",55],
+  [55,"الرحمن","Ar-Rahman","The Most Merciful",78],
+  [56,"الواقعة","Al-Waqi'ah","The Inevitable",96],
+  [57,"الحديد","Al-Hadid","The Iron",29],
+  [58,"المجادلة","Al-Mujadila","The Pleading Woman",22],
+  [59,"الحشر","Al-Hashr","The Gathering",24],
+  [60,"الممتحنة","Al-Mumtahanah","The Examined Woman",13],
+  [61,"الصف","As-Saff","The Ranks",14],
+  [62,"الجمعة","Al-Jumu'ah","The Congregation",11],
+  [63,"المنافقون","Al-Munafiqun","The Hypocrites",11],
+  [64,"التغابن","At-Taghabun","Mutual Disillusion",18],
+  [65,"الطلاق","At-Talaq","The Divorce",12],
+  [66,"التحريم","At-Tahrim","The Prohibition",12],
+  [67,"الملك","Al-Mulk","The Sovereignty",30],
+  [68,"القلم","Al-Qalam","The Pen",52],
+  [69,"الحاقة","Al-Haqqah","The Reality",52],
+  [70,"المعارج","Al-Ma'arij","The Ascending Stairways",44],
+  [71,"نوح","Nuh","Noah",28],
+  [72,"الجن","Al-Jinn","The Jinn",28],
+  [73,"المزمل","Al-Muzzammil","The Enshrouded One",20],
+  [74,"المدثر","Al-Muddaththir","The Cloaked One",56],
+  [75,"القيامة","Al-Qiyamah","The Resurrection",40],
+  [76,"الإنسان","Al-Insan","Man",31],
+  [77,"المرسلات","Al-Mursalat","Those Sent Forth",50],
+  [78,"النبأ","An-Naba'","The Tidings",40],
+  [79,"النازعات","An-Nazi'at","Those Who Drag Forth",46],
+  [80,"عبس","'Abasa","He Frowned",42],
+  [81,"التكوير","At-Takwir","The Overthrowing",29],
+  [82,"الانفطار","Al-Infitar","The Cleaving",19],
+  [83,"المطففين","Al-Mutaffifin","The Defrauders",36],
+  [84,"الانشقاق","Al-Inshiqaq","The Splitting Open",25],
+  [85,"البروج","Al-Buruj","The Constellations",22],
+  [86,"الطارق","At-Tariq","The Night-Comer",17],
+  [87,"الأعلى","Al-A'la","The Most High",19],
+  [88,"الغاشية","Al-Ghashiyah","The Overwhelming",26],
+  [89,"الفجر","Al-Fajr","The Dawn",30],
+  [90,"البلد","Al-Balad","The City",20],
+  [91,"الشمس","Ash-Shams","The Sun",15],
+  [92,"الليل","Al-Layl","The Night",21],
+  [93,"الضحى","Ad-Duha","The Morning Hours",11],
+  [94,"الشرح","Ash-Sharh","The Relief",8],
+  [95,"التين","At-Tin","The Fig",8],
+  [96,"العلق","Al-'Alaq","The Clot",19],
+  [97,"القدر","Al-Qadr","The Night of Decree",5],
+  [98,"البينة","Al-Bayyinah","The Clear Proof",8],
+  [99,"الزلزلة","Az-Zalzalah","The Earthquake",8],
+  [100,"العاديات","Al-'Adiyat","The Chargers",11],
+  [101,"القارعة","Al-Qari'ah","The Calamity",11],
+  [102,"التكاثر","At-Takathur","Rivalry in Wealth",8],
+  [103,"العصر","Al-'Asr","The Declining Day",3],
+  [104,"الهمزة","Al-Humazah","The Slanderer",9],
+  [105,"الفيل","Al-Fil","The Elephant",5],
+  [106,"قريش","Quraysh","Quraysh",4],
+  [107,"الماعون","Al-Ma'un","Small Kindnesses",7],
+  [108,"الكوثر","Al-Kawthar","Abundance",3],
+  [109,"الكافرون","Al-Kafirun","The Disbelievers",6],
+  [110,"النصر","An-Nasr","Divine Support",3],
+  [111,"المسد","Al-Masad","The Palm Fibre",5],
+  [112,"الإخلاص","Al-Ikhlas","Sincerity",4],
+  [113,"الفلق","Al-Falaq","The Daybreak",5],
+  [114,"الناس","An-Nas","Mankind",6]
+];
+
+const STORAGE_KEY = 'quran-tracker-v1';
+
+// ── State ──
+function defaultState() {
+  return {
+    amir_started: '',
+    farah_started: '',
+    rows: SURAHS.map(([num]) => ({
+      num,
+      ar: false, am: false,
+      fr: false, fm: false,
+      notes: ''
+    }))
+  };
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+    // Ensure all rows exist
+    const state = defaultState();
+    state.amir_started = parsed.amir_started || '';
+    state.farah_started = parsed.farah_started || '';
+    if (parsed.rows) {
+      parsed.rows.forEach(r => {
+        const idx = state.rows.findIndex(x => x.num === r.num);
+        if (idx !== -1) state.rows[idx] = { ...state.rows[idx], ...r };
+      });
+    }
+    return state;
+  } catch { return defaultState(); }
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+let state = loadState();
+
+// ── Build table ──
+function buildTable() {
+  const tbody = document.getElementById('surah-tbody');
+  tbody.innerHTML = '';
+  SURAHS.forEach(([num, arabic, name, meaning, ayat]) => {
+    const r = state.rows[num - 1];
+    const tr = document.createElement('tr');
+    tr.dataset.num = num;
+    tr.dataset.name = name.toLowerCase();
+    tr.dataset.meaning = meaning.toLowerCase();
+
+    tr.innerHTML = `
+      <td class="td-num">${num}</td>
+      <td class="td-arabic">${arabic}</td>
+      <td class="td-name">${name}</td>
+      <td class="td-meaning">${meaning}</td>
+      <td class="td-ayat">${ayat}</td>
+      <td class="td-check"><input type="checkbox" class="custom-checkbox amir-read" data-num="${num}" data-field="ar" ${r.ar?'checked':''}></td>
+      <td class="td-check"><input type="checkbox" class="custom-checkbox amir-mem"  data-num="${num}" data-field="am" ${r.am?'checked':''}></td>
+      <td class="td-check"><input type="checkbox" class="custom-checkbox farah-read" data-num="${num}" data-field="fr" ${r.fr?'checked':''}></td>
+      <td class="td-check"><input type="checkbox" class="custom-checkbox farah-mem"  data-num="${num}" data-field="fm" ${r.fm?'checked':''}></td>
+      <td class="td-notes"><input type="text" class="notes-input" data-num="${num}" placeholder="Notes…" value="${escapeAttr(r.notes)}"></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function escapeAttr(s) {
+  return (s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+}
+
+// ── Checkboxes ──
+document.getElementById('surah-tbody').addEventListener('change', e => {
+  const el = e.target;
+  if (el.classList.contains('custom-checkbox')) {
+    const num = +el.dataset.num;
+    const field = el.dataset.field;
+    state.rows[num - 1][field] = el.checked;
+    saveState();
+    updateProgress();
+    applyFilter();
+  }
+  if (el.classList.contains('notes-input')) {
+    // handled by input event
+  }
+});
+
+document.getElementById('surah-tbody').addEventListener('input', e => {
+  const el = e.target;
+  if (el.classList.contains('notes-input')) {
+    const num = +el.dataset.num;
+    state.rows[num - 1].notes = el.value;
+    saveState();
+  }
+});
+
+// ── Progress ──
+function updateProgress() {
+  const amir = state.rows.filter(r => r.am).length;
+  const farah = state.rows.filter(r => r.fm).length;
+  document.getElementById('amir-count').textContent = amir;
+  document.getElementById('farah-count').textContent = farah;
+  document.getElementById('amir-bar').style.width = (amir/114*100).toFixed(1) + '%';
+  document.getElementById('farah-bar').style.width = (farah/114*100).toFixed(1) + '%';
+}
+
+// ── Started dates ──
+const amirStarted = document.getElementById('amir-started');
+const farahStarted = document.getElementById('farah-started');
+amirStarted.value = state.amir_started || '';
+farahStarted.value = state.farah_started || '';
+amirStarted.addEventListener('change', () => { state.amir_started = amirStarted.value; saveState(); });
+farahStarted.addEventListener('change', () => { state.farah_started = farahStarted.value; saveState(); });
+
+// ── Search + filter ──
+let currentFilter = 'all';
+
+function applyFilter() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  document.querySelectorAll('#surah-tbody tr').forEach(tr => {
+    const num = +tr.dataset.num;
+    const r = state.rows[num - 1];
+
+    let matchSearch = !q ||
+      tr.dataset.num.includes(q) ||
+      tr.dataset.name.includes(q) ||
+      tr.dataset.meaning.includes(q);
+
+    let matchFilter = true;
+    if (currentFilter === 'amir-mem') matchFilter = r.am;
+    else if (currentFilter === 'farah-mem') matchFilter = r.fm;
+    else if (currentFilter === 'neither-mem') matchFilter = !r.am && !r.fm;
+
+    tr.classList.toggle('hidden', !(matchSearch && matchFilter));
+  });
+}
+
+document.getElementById('search').addEventListener('input', applyFilter);
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    applyFilter();
+  });
+});
+
+// ── Reset ──
+document.getElementById('reset-btn').addEventListener('click', () => {
+  if (!confirm('Reset ALL progress? This cannot be undone.')) return;
+  state = defaultState();
+  saveState();
+  buildTable();
+  updateProgress();
+  applyFilter();
+  showToast('All progress reset.');
+});
+
+// ── Toast ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── Init ──
+buildTable();
+updateProgress();
+</script>
+</body>
+</html>
