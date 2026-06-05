@@ -8,7 +8,9 @@
   <meta name="apple-mobile-web-app-title" content="Qur'an Tracker">
   <meta name="theme-color" content="#1a4a2e">
   <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
   <title>Holy Qur'an Tracker — Amir &amp; Farah</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -337,26 +339,76 @@
     .log-meta { font-size: 0.72rem; color: var(--text-light); margin-top: 3px; }
     .log-duration { font-weight: 700; color: var(--gold); }
 
-    /* ── INSTALL BANNER ── */
+    /* ── INSTALL BANNER (Android) ── */
     #install-banner {
-      display: none; position: fixed; bottom: calc(60px + var(--safe-bottom));
+      display: none; position: fixed; bottom: calc(68px + var(--safe-bottom));
       left: 12px; right: 12px; background: var(--green-dark); color: white;
-      border-radius: 12px; padding: 14px 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 200;
+      border-radius: 14px; padding: 14px 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.35); z-index: 200;
       flex-direction: column; gap: 10px;
     }
     #install-banner.show { display: flex; }
-    .install-text { font-size: 0.88rem; font-weight: 600; }
+    .install-text { font-size: 0.9rem; font-weight: 700; }
     .install-sub { font-size: 0.75rem; opacity: 0.8; }
     .install-btns { display: flex; gap: 10px; }
     .install-yes {
-      flex: 1; padding: 9px; background: var(--gold); color: white;
-      border: none; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer;
+      flex: 1; padding: 10px; background: var(--gold); color: white;
+      border: none; border-radius: 8px; font-weight: 700; font-size: 0.88rem; cursor: pointer;
     }
     .install-no {
-      padding: 9px 14px; background: transparent; color: rgba(255,255,255,0.7);
+      padding: 10px 14px; background: transparent; color: rgba(255,255,255,0.7);
       border: 1px solid rgba(255,255,255,0.3); border-radius: 8px;
       font-size: 0.82rem; cursor: pointer;
+    }
+
+    /* ── HOW TO INSTALL MODAL ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55); z-index: 300;
+      align-items: flex-end; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: white; border-radius: 20px 20px 0 0; width: 100%; max-width: 520px;
+      padding: 24px 20px 32px; max-height: 90vh; overflow-y: auto;
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .modal-handle { width: 40px; height: 4px; background: #ddd; border-radius: 2px; margin: 0 auto 18px; }
+    .modal-title {
+      font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700;
+      color: var(--green-dark); text-align: center; margin-bottom: 20px;
+    }
+    .install-os-tabs { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+    .os-tab {
+      flex: 1; padding: 10px; border: none; background: white; font-size: 0.85rem;
+      font-weight: 600; cursor: pointer; color: var(--text-mid); transition: all 0.15s;
+    }
+    .os-tab.active { background: var(--green-dark); color: white; }
+    .os-panel { display: none; }
+    .os-panel.active { display: block; }
+    .install-step {
+      display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px;
+    }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%; background: var(--green-dark);
+      color: white; font-weight: 700; font-size: 0.85rem; display: flex;
+      align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+    }
+    .step-text { font-size: 0.88rem; color: var(--text-dark); line-height: 1.5; }
+    .step-text strong { color: var(--green-dark); }
+    .step-icon { font-size: 1.3rem; }
+    .modal-close {
+      width: 100%; padding: 13px; background: var(--green-dark); color: white;
+      border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700;
+      cursor: pointer; margin-top: 8px;
+    }
+    /* Install button in app header */
+    .install-btn-header {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      padding: 6px 12px; background: var(--gold); color: white; border: none;
+      border-radius: 20px; font-size: 0.72rem; font-weight: 700; cursor: pointer;
+      white-space: nowrap;
     }
 
     /* ── BOTTOM NAV (sticky) ── */
@@ -401,9 +453,10 @@
 <body>
 
 <!-- App Header -->
-<header class="app-header">
+<header class="app-header" style="position:relative">
   <div class="app-header-title">Holy Qur'an — Amir &amp; Farah</div>
   <div class="app-header-sub">Memorization Tracker &amp; Punch Clock</div>
+  <button class="install-btn-header" id="header-install-btn" onclick="openInstallModal()" title="Install as app">⬇ Install</button>
 </header>
 
 <!-- Tab Bar (top on desktop, bottom-nav on mobile) -->
@@ -582,7 +635,65 @@
   </div>
 </div>
 
-<!-- Install Banner -->
+<!-- Install Modal -->
+<div class="modal-overlay" id="install-modal" onclick="closeInstallModalIfBg(event)">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📲 Add to Home Screen</div>
+
+    <div class="install-os-tabs">
+      <button class="os-tab active" onclick="switchOS('ios')">iPhone / iPad</button>
+      <button class="os-tab" onclick="switchOS('android')">Android</button>
+    </div>
+
+    <!-- iOS Panel -->
+    <div class="os-panel active" id="panel-ios">
+      <div class="install-step">
+        <div class="step-num">1</div>
+        <div class="step-text">Open this page in <strong>Safari</strong> (not Chrome or another browser).</div>
+      </div>
+      <div class="install-step">
+        <div class="step-num">2</div>
+        <div class="step-text">Tap the <strong>Share button</strong> <span class="step-icon">⬆️</span> at the bottom of Safari (the square with an arrow pointing up).</div>
+      </div>
+      <div class="install-step">
+        <div class="step-num">3</div>
+        <div class="step-text">Scroll down in the Share sheet and tap <strong>"Add to Home Screen"</strong> <span class="step-icon">＋</span></div>
+      </div>
+      <div class="install-step">
+        <div class="step-num">4</div>
+        <div class="step-text">Tap <strong>"Add"</strong> in the top right. The app icon will appear on your home screen!</div>
+      </div>
+    </div>
+
+    <!-- Android Panel -->
+    <div class="os-panel" id="panel-android">
+      <div class="install-step">
+        <div class="step-num">1</div>
+        <div class="step-text">Open this page in <strong>Chrome</strong>.</div>
+      </div>
+      <div class="install-step">
+        <div class="step-num">2</div>
+        <div class="step-text">Tap the <strong>three-dot menu</strong> <span class="step-icon">⋮</span> in the top right corner of Chrome.</div>
+      </div>
+      <div class="install-step">
+        <div class="step-num">3</div>
+        <div class="step-text">Tap <strong>"Add to Home screen"</strong> or <strong>"Install app"</strong>.</div>
+      </div>
+      <div class="install-step">
+        <div class="step-num">4</div>
+        <div class="step-text">Tap <strong>"Install"</strong> to confirm. The app will appear on your home screen!</div>
+      </div>
+      <div id="android-auto-install" style="display:none;margin-top:4px">
+        <button class="modal-close" style="background:var(--gold);margin-bottom:10px" id="android-install-trigger">Tap here to Install Now</button>
+      </div>
+    </div>
+
+    <button class="modal-close" onclick="closeInstallModal()">Got it</button>
+  </div>
+</div>
+
+<!-- Install Banner (Android auto-prompt) -->
 <div id="install-banner">
   <div>
     <div class="install-text">Add to Home Screen</div>
@@ -1056,21 +1167,59 @@ function showToast(msg) {
 // PWA INSTALL
 // ══════════════════════════════════════
 let deferredPrompt = null;
+
+// Detect iOS
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isInStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+
+// Auto-detect OS for modal default tab
+if (!isIOS) switchOS('android');
+
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   deferredPrompt = e;
+  // Show the auto-install button inside modal
+  document.getElementById('android-auto-install').style.display = 'block';
+  // Show banner if not dismissed
   if (!localStorage.getItem('pwa-dismissed')) {
     document.getElementById('install-banner').classList.add('show');
   }
 });
+
 document.getElementById('install-yes').addEventListener('click', () => {
   document.getElementById('install-banner').classList.remove('show');
   if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt = null; }
+  else openInstallModal();
 });
 document.getElementById('install-no').addEventListener('click', () => {
   document.getElementById('install-banner').classList.remove('show');
   localStorage.setItem('pwa-dismissed', '1');
 });
+
+document.getElementById('android-install-trigger').addEventListener('click', () => {
+  if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt = null; closeInstallModal(); }
+});
+
+// Hide install button if already installed
+if (isInStandalone) {
+  const btn = document.getElementById('header-install-btn');
+  if (btn) btn.style.display = 'none';
+}
+
+function openInstallModal() {
+  document.getElementById('install-modal').classList.add('open');
+}
+function closeInstallModal() {
+  document.getElementById('install-modal').classList.remove('open');
+}
+function closeInstallModalIfBg(e) {
+  if (e.target === document.getElementById('install-modal')) closeInstallModal();
+}
+function switchOS(os) {
+  document.querySelectorAll('.os-tab').forEach((t,i) => t.classList.toggle('active', (os==='ios' && i===0) || (os==='android' && i===1)));
+  document.getElementById('panel-ios').classList.toggle('active', os === 'ios');
+  document.getElementById('panel-android').classList.toggle('active', os === 'android');
+}
 
 // Service Worker
 if ('serviceWorker' in navigator) {
