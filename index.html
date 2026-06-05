@@ -2,8 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Holy Qur'an Memorization Tracker — Amir &amp; Farah</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Qur'an Tracker">
+  <meta name="theme-color" content="#1a4a2e">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <title>Holy Qur'an Tracker — Amir &amp; Farah</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -16,7 +22,6 @@
       --green-light: #3a8a5a;
       --teal-dark: #0d5c54;
       --teal-mid: #1a7a6e;
-      --teal-light: #2a9e8e;
       --gold: #c9941a;
       --gold-light: #e6b84a;
       --text-dark: #2a2017;
@@ -24,699 +29,595 @@
       --text-light: #8a7a60;
       --border: #d4c49a;
       --shadow: rgba(26,74,46,0.12);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-top: env(safe-area-inset-top, 0px);
     }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; }
 
     body {
-      background-color: var(--cream);
+      background: var(--cream);
       font-family: 'Inter', sans-serif;
       color: var(--text-dark);
-      min-height: 100vh;
-    }
-
-    /* ── HEADER ── */
-    .page-header {
-      background: var(--cream);
-      border: 3px solid var(--green-dark);
-      border-radius: 4px;
-      margin: 20px auto;
-      max-width: 1200px;
-      padding: 40px 60px 36px;
-      text-align: center;
-      position: relative;
-      box-shadow: 0 4px 20px var(--shadow);
-    }
-
-    .corner-star {
-      position: absolute;
-      width: 28px; height: 28px;
-      fill: var(--gold);
-    }
-    .corner-star.tl { top: 10px; left: 10px; }
-    .corner-star.tr { top: 10px; right: 10px; }
-    .corner-star.bl { bottom: 10px; left: 10px; }
-    .corner-star.br { bottom: 10px; right: 10px; }
-
-    .mosque-icon {
-      width: 110px; height: 110px;
-      margin: 0 auto 20px;
-      display: block;
-    }
-
-    .bismillah-arabic {
-      font-family: 'Amiri', serif;
-      font-size: 2.8rem;
-      color: var(--green-dark);
-      direction: rtl;
-      line-height: 1.4;
-      margin-bottom: 6px;
-    }
-
-    .bismillah-english {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 1rem;
-      color: var(--text-mid);
-      margin-bottom: 18px;
-    }
-
-    .divider {
       display: flex;
-      align-items: center;
-      gap: 12px;
-      justify-content: center;
-      margin: 14px 0;
-    }
-    .divider-line {
-      flex: 1;
-      max-width: 200px;
-      height: 1px;
-      background: linear-gradient(to right, transparent, var(--gold));
-    }
-    .divider-line.right {
-      background: linear-gradient(to left, transparent, var(--gold));
-    }
-    .divider-star { font-size: 1.1rem; color: var(--gold); }
-
-    .main-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.4rem;
-      font-weight: 700;
-      color: var(--green-dark);
-      margin-bottom: 6px;
+      flex-direction: column;
+      padding-top: var(--safe-top);
     }
 
-    .subtitle {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 1.1rem;
-      color: var(--gold);
-      margin-bottom: 28px;
-    }
-
-    /* ── INFO CARDS ── */
-    .info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      text-align: left;
-      margin-bottom: 28px;
-    }
-
-    .info-card {
-      background: rgba(255,255,255,0.5);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 18px 20px;
-    }
-
-    .info-card h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--green-dark);
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .info-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 6px;
-      font-size: 0.88rem;
-    }
-    .info-label { font-weight: 600; color: var(--text-dark); min-width: 80px; }
-    .info-text { color: var(--text-mid); }
-
-    .legend {
-      font-size: 0.82rem;
-      color: var(--text-light);
-      font-style: italic;
-      margin-top: 10px;
-    }
-
-    /* ── PROGRESS CARD ── */
-    .progress-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .progress-person {
-      margin-bottom: 10px;
-    }
-
-    .progress-person-label {
-      font-weight: 700;
-      font-size: 0.9rem;
-      margin-bottom: 6px;
-    }
-    .progress-person-label.amir { color: var(--green-dark); }
-    .progress-person-label.farah { color: var(--teal-dark); }
-
-    .progress-stats {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 6px;
-    }
-
-    .progress-count {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.5rem;
-      font-weight: 700;
-      line-height: 1;
-    }
-    .progress-count.amir { color: var(--green-mid); }
-    .progress-count.farah { color: var(--teal-mid); }
-
-    .progress-of { font-size: 0.8rem; color: var(--text-light); }
-
-    .progress-bar-track {
-      height: 6px;
-      background: var(--cream-dark);
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    .progress-bar-fill {
-      height: 100%;
-      border-radius: 3px;
-      transition: width 0.4s ease;
-    }
-    .progress-bar-fill.amir { background: var(--green-mid); }
-    .progress-bar-fill.farah { background: var(--teal-mid); }
-
-    .started-row {
-      margin-top: 6px;
-      font-size: 0.8rem;
-      color: var(--text-light);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .started-input {
-      border: 1px solid var(--border);
-      background: white;
-      border-radius: 4px;
-      padding: 2px 6px;
-      font-size: 0.8rem;
-      color: var(--text-dark);
-      width: 130px;
-    }
-
-    .quran-quote {
-      margin-top: 20px;
-    }
-    .quran-quote-arabic {
-      font-family: 'Amiri', serif;
-      font-size: 1.8rem;
-      color: var(--green-dark);
-      direction: rtl;
-    }
-    .quran-quote-english {
-      font-size: 0.88rem;
-      font-style: italic;
-      color: var(--text-mid);
-      margin-top: 4px;
-    }
-
-    /* ── MAIN CONTENT ── */
-    .main-content {
-      max-width: 1200px;
-      margin: 0 auto 30px;
-      padding: 0 20px;
-    }
-
-    /* ── TOOLBAR ── */
-    .toolbar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
-      flex-wrap: wrap;
-    }
-
-    .search-input {
-      flex: 1;
-      min-width: 200px;
-      padding: 8px 14px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      font-size: 0.88rem;
-      background: white;
-      color: var(--text-dark);
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .search-input:focus { border-color: var(--green-mid); }
-
-    .filter-btn {
-      padding: 8px 14px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: white;
-      font-size: 0.82rem;
-      cursor: pointer;
-      color: var(--text-mid);
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-    .filter-btn:hover { border-color: var(--green-mid); color: var(--green-dark); }
-    .filter-btn.active { background: var(--green-dark); color: white; border-color: var(--green-dark); }
-
-    .reset-btn {
-      padding: 8px 14px;
-      border: 1px solid #e0c4c4;
-      border-radius: 6px;
-      background: white;
-      font-size: 0.82rem;
-      cursor: pointer;
-      color: #a06060;
-      transition: all 0.2s;
-    }
-    .reset-btn:hover { background: #fff0f0; }
-
-    /* ── TABLE ── */
-    .table-wrapper {
-      border: 2px solid var(--green-dark);
-      border-radius: 6px;
-      overflow: hidden;
-      box-shadow: 0 2px 16px var(--shadow);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    thead tr {
+    /* ── APP SHELL ── */
+    .app-header {
       background: var(--green-dark);
       color: white;
-    }
-
-    .th-group {
+      padding: 14px 16px 12px;
       text-align: center;
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      padding: 8px 6px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.2);
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      z-index: 50;
     }
-    .th-group.amir-group { background: rgba(255,255,255,0.08); }
-    .th-group.farah-group { background: rgba(255,255,255,0.04); }
-
-    th {
-      padding: 8px 8px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-align: center;
-      white-space: nowrap;
-    }
-    th.left { text-align: left; }
-
-    td {
-      padding: 10px 8px;
-      font-size: 0.85rem;
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
-    }
-
-    tr:last-child td { border-bottom: none; }
-
-    tr:nth-child(even) td { background: var(--cream-mid); }
-    tr:nth-child(odd) td { background: var(--cream); }
-
-    tr:hover td { background: #e8f0ec !important; transition: background 0.15s; }
-
-    tr.hidden { display: none; }
-
-    .td-num {
-      text-align: center;
-      font-weight: 600;
-      color: var(--gold);
-      width: 40px;
-      font-size: 0.82rem;
-    }
-
-    .td-arabic {
-      font-family: 'Amiri', serif;
+    .app-header-title {
+      font-family: 'Playfair Display', serif;
       font-size: 1.1rem;
-      text-align: right;
-      direction: rtl;
-      color: var(--text-dark);
-      min-width: 100px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .app-header-sub {
+      font-size: 0.72rem;
+      opacity: 0.75;
+      margin-top: 2px;
+      font-style: italic;
+      font-family: 'Playfair Display', serif;
     }
 
-    .td-name {
-      font-weight: 600;
-      color: var(--green-dark);
-      min-width: 130px;
-    }
-
-    .td-meaning {
-      color: var(--text-mid);
-      min-width: 120px;
-    }
-
-    .td-ayat {
-      text-align: center;
-      font-weight: 500;
-      color: var(--text-mid);
-      width: 50px;
-    }
-
-    .td-check {
-      text-align: center;
-      width: 44px;
-    }
-
-    .td-notes {
-      min-width: 140px;
-    }
-
-    /* ── CHECKBOXES ── */
-    .custom-checkbox {
-      appearance: none;
-      -webkit-appearance: none;
-      width: 20px;
-      height: 20px;
-      border: 2px solid;
-      border-radius: 3px;
-      cursor: pointer;
-      display: inline-block;
-      vertical-align: middle;
-      position: relative;
-      transition: all 0.15s;
-      background: white;
-    }
-
-    .custom-checkbox.amir-read {
-      border-color: var(--green-mid);
-    }
-    .custom-checkbox.amir-mem {
-      border-color: var(--green-dark);
-    }
-    .custom-checkbox.farah-read {
-      border-color: var(--teal-mid);
-    }
-    .custom-checkbox.farah-mem {
-      border-color: var(--teal-dark);
-    }
-
-    .custom-checkbox.amir-read:checked {
-      background: var(--green-mid);
-      border-color: var(--green-mid);
-    }
-    .custom-checkbox.amir-mem:checked {
+    .tab-bar {
+      display: flex;
       background: var(--green-dark);
-      border-color: var(--green-dark);
+      border-top: 1px solid rgba(255,255,255,0.15);
+      flex-shrink: 0;
     }
-    .custom-checkbox.farah-read:checked {
-      background: var(--teal-mid);
-      border-color: var(--teal-mid);
-    }
-    .custom-checkbox.farah-mem:checked {
-      background: var(--teal-dark);
-      border-color: var(--teal-dark);
-    }
-
-    .custom-checkbox:checked::after {
-      content: '';
-      position: absolute;
-      left: 4px;
-      top: 1px;
-      width: 6px;
-      height: 10px;
-      border: 2px solid white;
-      border-top: none;
-      border-left: none;
-      transform: rotate(45deg);
-    }
-
-    .custom-checkbox:hover:not(:checked) {
-      background: var(--cream-mid);
-    }
-
-    /* ── NOTES INPUT ── */
-    .notes-input {
-      width: 100%;
+    .tab-btn {
+      flex: 1;
+      padding: 10px 4px 8px;
       border: none;
       background: transparent;
-      font-size: 0.8rem;
-      color: var(--text-mid);
-      font-family: 'Inter', sans-serif;
-      outline: none;
-      padding: 2px 4px;
-      border-bottom: 1px dashed var(--border);
-      transition: border-color 0.2s;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      transition: color 0.2s;
     }
-    .notes-input:focus {
-      border-bottom-color: var(--green-mid);
-      background: rgba(255,255,255,0.6);
-    }
-    .notes-input::placeholder { color: var(--border); }
+    .tab-btn svg { width: 20px; height: 20px; }
+    .tab-btn.active { color: var(--gold-light); }
+    .tab-btn.active .tab-icon { stroke: var(--gold-light); }
+    .tab-icon { stroke: rgba(255,255,255,0.6); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.2s; }
 
-    /* ── FOOTER ── */
-    .page-footer {
-      max-width: 1200px;
-      margin: 0 auto 30px;
-      padding: 0 20px;
-      text-align: center;
-    }
+    .page { display: none; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .page.active { display: block; }
 
-    .footer-inner {
-      border: 2px solid var(--green-dark);
-      border-radius: 6px;
-      padding: 28px 40px;
+    /* ── SHARED ── */
+    .divider {
+      display: flex; align-items: center; gap: 10px; justify-content: center; margin: 10px 0;
+    }
+    .divider-line { flex: 1; max-width: 120px; height: 1px; }
+    .divider-line.l { background: linear-gradient(to right, transparent, var(--gold)); }
+    .divider-line.r { background: linear-gradient(to left, transparent, var(--gold)); }
+    .divider-star { font-size: 0.9rem; color: var(--gold); }
+
+    /* ── TRACKER PAGE ── */
+    .tracker-hero {
       background: var(--cream);
-      position: relative;
+      text-align: center;
+      padding: 20px 16px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .bismillah-ar {
+      font-family: 'Amiri', serif; font-size: 1.8rem;
+      color: var(--green-dark); direction: rtl; line-height: 1.4;
+    }
+    .bismillah-en {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: 0.8rem; color: var(--text-mid); margin-bottom: 10px;
+    }
+    .mosque-svg { width: 70px; height: 70px; margin: 0 auto 10px; display: block; }
+    .hero-title {
+      font-family: 'Playfair Display', serif; font-size: 1.4rem;
+      font-weight: 700; color: var(--green-dark); margin-bottom: 2px;
+    }
+    .hero-sub { font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.85rem; color: var(--gold); }
+
+    /* Progress cards */
+    .progress-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+      padding: 12px 12px 0;
+    }
+    .prog-card {
+      background: white; border: 1px solid var(--border); border-radius: 10px;
+      padding: 12px; box-shadow: 0 1px 6px var(--shadow);
+    }
+    .prog-name { font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
+    .prog-name.amir { color: var(--green-dark); }
+    .prog-name.farah { color: var(--teal-dark); }
+    .prog-num { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; line-height: 1; }
+    .prog-num.amir { color: var(--green-mid); }
+    .prog-num.farah { color: var(--teal-mid); }
+    .prog-of { font-size: 0.7rem; color: var(--text-light); }
+    .prog-bar { height: 5px; background: var(--cream-dark); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+    .prog-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
+    .prog-fill.amir { background: var(--green-mid); }
+    .prog-fill.farah { background: var(--teal-mid); }
+    .prog-started { font-size: 0.7rem; color: var(--text-light); margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+    .prog-date-input { border: 1px solid var(--border); border-radius: 4px; padding: 1px 4px; font-size: 0.7rem; color: var(--text-dark); background: var(--cream-mid); width: 110px; }
+
+    /* Toolbar */
+    .tracker-toolbar {
+      padding: 10px 12px 6px;
+      display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+    }
+    .search-box {
+      flex: 1; min-width: 150px; padding: 8px 12px;
+      border: 1px solid var(--border); border-radius: 8px;
+      font-size: 0.85rem; background: white; outline: none;
+      color: var(--text-dark);
+    }
+    .search-box:focus { border-color: var(--green-mid); }
+    .filter-wrap { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filt-btn {
+      padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px;
+      background: white; font-size: 0.72rem; cursor: pointer; color: var(--text-mid);
+      white-space: nowrap; font-weight: 600;
+    }
+    .filt-btn.active { background: var(--green-dark); color: white; border-color: var(--green-dark); }
+
+    /* Table */
+    .table-wrap {
+      margin: 0 12px 80px;
+      border: 1px solid var(--border); border-radius: 10px;
+      overflow: hidden; box-shadow: 0 2px 10px var(--shadow);
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: var(--green-dark); color: white; }
+    th {
+      padding: 7px 5px; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.04em; text-align: center; white-space: nowrap;
+    }
+    th.tl { text-align: left; padding-left: 8px; }
+    .th-group {
+      padding: 5px 4px 0; font-size: 0.65rem; text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    td { padding: 9px 5px; font-size: 0.8rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: var(--cream-mid); }
+    tr:nth-child(odd) td { background: var(--cream); }
+    tr:hover td { background: #e6efe9 !important; }
+    tr.hidden { display: none; }
+
+    .td-num { text-align: center; font-weight: 700; color: var(--gold); font-size: 0.75rem; width: 30px; }
+    .td-ar { font-family: 'Amiri', serif; font-size: 0.95rem; text-align: right; direction: rtl; width: 80px; }
+    .td-name { font-weight: 600; color: var(--green-dark); font-size: 0.78rem; }
+    .td-ayat { text-align: center; color: var(--text-mid); font-size: 0.75rem; width: 35px; }
+    .td-cb { text-align: center; width: 32px; }
+    .td-notes { min-width: 80px; }
+
+    .cb {
+      appearance: none; -webkit-appearance: none;
+      width: 18px; height: 18px; border: 2px solid; border-radius: 3px;
+      cursor: pointer; display: inline-block; position: relative;
+      transition: all 0.15s; background: white;
+    }
+    .cb.ar { border-color: var(--green-mid); }
+    .cb.am { border-color: var(--green-dark); }
+    .cb.fr { border-color: var(--teal-mid); }
+    .cb.fm { border-color: var(--teal-dark); }
+    .cb.ar:checked { background: var(--green-mid); border-color: var(--green-mid); }
+    .cb.am:checked { background: var(--green-dark); border-color: var(--green-dark); }
+    .cb.fr:checked { background: var(--teal-mid); border-color: var(--teal-mid); }
+    .cb.fm:checked { background: var(--teal-dark); border-color: var(--teal-dark); }
+    .cb:checked::after {
+      content: ''; position: absolute; left: 3px; top: 0px;
+      width: 5px; height: 9px; border: 2px solid white;
+      border-top: none; border-left: none; transform: rotate(45deg);
+    }
+    .notes-in {
+      width: 100%; border: none; background: transparent;
+      font-size: 0.75rem; color: var(--text-mid); outline: none;
+      border-bottom: 1px dashed var(--border); font-family: 'Inter', sans-serif;
+      padding: 1px 2px;
+    }
+    .notes-in:focus { border-bottom-color: var(--green-mid); background: rgba(255,255,255,0.5); }
+
+    /* ── PUNCH CLOCK PAGE ── */
+    .punch-page { padding: 16px 12px 100px; }
+    .punch-header {
+      text-align: center; margin-bottom: 16px;
+    }
+    .punch-title {
+      font-family: 'Playfair Display', serif; font-size: 1.3rem;
+      font-weight: 700; color: var(--green-dark);
+    }
+    .punch-subtitle { font-size: 0.78rem; color: var(--text-mid); margin-top: 2px; }
+
+    .person-card {
+      background: white; border-radius: 14px; padding: 18px;
+      margin-bottom: 14px; box-shadow: 0 2px 12px var(--shadow);
+      border: 1px solid var(--border);
+    }
+    .person-card.amir { border-left: 4px solid var(--green-mid); }
+    .person-card.farah { border-left: 4px solid var(--teal-mid); }
+
+    .person-name {
+      font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 6px;
+    }
+    .person-name.amir { color: var(--green-dark); }
+    .person-name.farah { color: var(--teal-dark); }
+
+    .person-status {
+      font-size: 0.82rem; color: var(--text-light); margin-bottom: 14px;
+      min-height: 20px; font-weight: 500;
+    }
+    .person-status.active-amir { color: var(--green-mid); }
+    .person-status.active-farah { color: var(--teal-mid); }
+
+    .field-label { font-size: 0.72rem; font-weight: 600; color: var(--text-mid); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .surah-select {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+      border-radius: 8px; font-size: 0.85rem; color: var(--text-dark);
+      background: var(--cream); outline: none; margin-bottom: 12px;
+      font-family: 'Inter', sans-serif;
+    }
+    .surah-select:focus { border-color: var(--green-mid); }
+    .surah-select:disabled { opacity: 0.6; }
+
+    .activity-row { display: flex; gap: 10px; margin-bottom: 16px; }
+    .act-btn {
+      flex: 1; padding: 9px; border: 2px solid var(--border); border-radius: 8px;
+      background: white; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+      color: var(--text-mid); transition: all 0.15s; text-align: center;
+    }
+    .act-btn.sel-amir { border-color: var(--green-mid); background: var(--green-mid); color: white; }
+    .act-btn.sel-farah { border-color: var(--teal-mid); background: var(--teal-mid); color: white; }
+
+    .punch-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .punch-in-btn, .punch-out-btn {
+      padding: 13px; border: none; border-radius: 10px; font-size: 0.95rem;
+      font-weight: 700; cursor: pointer; transition: all 0.2s; letter-spacing: 0.02em;
+    }
+    .punch-in-btn { background: var(--green-mid); color: white; }
+    .punch-in-btn.teal { background: var(--teal-mid); }
+    .punch-in-btn:disabled { background: #c0c0b0; cursor: not-allowed; }
+    .punch-out-btn { background: #c0c0b0; color: white; }
+    .punch-out-btn.active-amir { background: var(--green-dark); }
+    .punch-out-btn.active-farah { background: var(--teal-dark); }
+    .punch-out-btn:disabled { cursor: not-allowed; }
+
+    .timer-display {
+      text-align: center; margin-top: 10px; font-size: 1.6rem;
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      color: var(--text-light); display: none;
+    }
+    .timer-display.running { display: block; }
+    .timer-display.amir-timer { color: var(--green-mid); }
+    .timer-display.farah-timer { color: var(--teal-mid); }
+
+    /* ── LOG PAGE ── */
+    .log-page { padding: 16px 12px 100px; }
+    .log-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .log-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; color: var(--green-dark); }
+    .export-btn {
+      padding: 8px 14px; background: var(--green-dark); color: white;
+      border: none; border-radius: 8px; font-size: 0.78rem; font-weight: 600;
+      cursor: pointer;
+    }
+    .clear-btn {
+      padding: 8px 14px; background: white; color: #a05050;
+      border: 1px solid #e0c4c4; border-radius: 8px; font-size: 0.78rem;
+      font-weight: 600; cursor: pointer; margin-left: 8px;
     }
 
-    .footer-dua-arabic {
-      font-family: 'Amiri', serif;
-      font-size: 1.4rem;
-      color: var(--text-mid);
-      font-style: italic;
+    .log-empty { text-align: center; color: var(--text-light); padding: 40px 20px; font-style: italic; font-size: 0.9rem; }
+
+    .log-entry {
+      background: white; border: 1px solid var(--border); border-radius: 10px;
+      padding: 12px 14px; margin-bottom: 10px; box-shadow: 0 1px 4px var(--shadow);
+    }
+    .log-entry-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .log-person { font-weight: 700; font-size: 0.85rem; }
+    .log-person.amir { color: var(--green-dark); }
+    .log-person.farah { color: var(--teal-dark); }
+    .log-action { font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+    .log-action.in { background: #d4edda; color: #1a5c30; }
+    .log-action.out { background: #f8d7da; color: #7a1a20; }
+    .log-surah { font-size: 0.82rem; color: var(--text-dark); font-weight: 500; }
+    .log-meta { font-size: 0.72rem; color: var(--text-light); margin-top: 3px; }
+    .log-duration { font-weight: 700; color: var(--gold); }
+
+    /* ── INSTALL BANNER ── */
+    #install-banner {
+      display: none; position: fixed; bottom: calc(60px + var(--safe-bottom));
+      left: 12px; right: 12px; background: var(--green-dark); color: white;
+      border-radius: 12px; padding: 14px 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 200;
+      flex-direction: column; gap: 10px;
+    }
+    #install-banner.show { display: flex; }
+    .install-text { font-size: 0.88rem; font-weight: 600; }
+    .install-sub { font-size: 0.75rem; opacity: 0.8; }
+    .install-btns { display: flex; gap: 10px; }
+    .install-yes {
+      flex: 1; padding: 9px; background: var(--gold); color: white;
+      border: none; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer;
+    }
+    .install-no {
+      padding: 9px 14px; background: transparent; color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.3); border-radius: 8px;
+      font-size: 0.82rem; cursor: pointer;
     }
 
-    .footer-ameen {
-      font-family: 'Amiri', serif;
-      font-size: 2rem;
-      color: var(--green-dark);
-      margin-top: 8px;
-    }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 768px) {
-      .page-header { padding: 24px 20px; margin: 10px; }
-      .main-title { font-size: 1.8rem; }
-      .bismillah-arabic { font-size: 2rem; }
-      .info-grid { grid-template-columns: 1fr; }
-      .main-content { padding: 0 10px; }
-      .td-arabic { min-width: 80px; font-size: 0.95rem; }
-      .td-notes { display: none; }
-    }
-
-    @media print {
-      .toolbar { display: none; }
-      .search-input { display: none; }
-      tr.hidden { display: table-row !important; }
-      body { background: white; }
-      .page-header { box-shadow: none; border: 2px solid var(--green-dark); }
+    /* ── BOTTOM NAV (sticky) ── */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      padding-bottom: var(--safe-bottom);
+      background: var(--green-dark); z-index: 100;
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.2);
     }
 
     /* ── TOAST ── */
     .toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--green-dark);
-      color: white;
-      padding: 10px 18px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.3s;
-      pointer-events: none;
-      z-index: 100;
+      position: fixed; bottom: calc(72px + var(--safe-bottom)); left: 50%; transform: translateX(-50%) translateY(10px);
+      background: var(--text-dark); color: white; padding: 10px 18px; border-radius: 20px;
+      font-size: 0.82rem; opacity: 0; pointer-events: none; z-index: 300;
+      transition: all 0.3s; white-space: nowrap;
     }
-    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── RESPONSIVE (desktop) ── */
+    @media (min-width: 680px) {
+      .person-card { max-width: 380px; }
+      .punch-page { display: flex; flex-direction: column; align-items: center; }
+      .punch-header { width: 100%; }
+      .person-card { width: 100%; }
+    }
+    @media (min-width: 900px) {
+      .punch-page .person-cards-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; max-width: 800px; }
+      .progress-row { max-width: 700px; margin: 0 auto; }
+      .table-wrap { margin-bottom: 30px; }
+      .bottom-nav { display: none; }
+      .tab-bar { position: static; background: var(--cream-dark); padding: 0 20px; }
+      .tab-btn { color: var(--text-mid); flex-direction: row; gap: 6px; padding: 12px 20px; font-size: 0.8rem; }
+      .tab-btn.active { color: var(--green-dark); border-bottom: 3px solid var(--green-dark); }
+      .tab-btn svg { width: 18px; height: 18px; }
+      .tab-icon { stroke: var(--text-mid); }
+      .tab-btn.active .tab-icon { stroke: var(--green-dark); }
+      .page { overflow-y: auto; }
+    }
   </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header class="page-header">
-  <!-- Corner stars -->
-  <svg class="corner-star tl" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
-  <svg class="corner-star tr" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
-  <svg class="corner-star bl" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
-  <svg class="corner-star br" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
-
-  <!-- Mosque icon -->
-  <svg class="mosque-icon" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="60" cy="60" r="56" stroke="#1a4a2e" stroke-width="2.5"/>
-    <!-- Main dome -->
-    <path d="M36 72 Q36 48 60 44 Q84 48 84 72 Z" fill="#1a4a2e"/>
-    <!-- Main dome highlight -->
-    <path d="M44 72 Q44 54 60 50 Q76 54 76 72 Z" fill="#2d6e47"/>
-    <!-- Left minaret -->
-    <rect x="26" y="56" width="10" height="16" rx="1" fill="#1a4a2e"/>
-    <path d="M26 56 Q31 50 36 56 Z" fill="#1a4a2e"/>
-    <rect x="29" y="49" width="4" height="8" rx="2" fill="#1a4a2e"/>
-    <circle cx="31" cy="48" r="2" fill="#c9941a"/>
-    <!-- Right minaret -->
-    <rect x="84" y="56" width="10" height="16" rx="1" fill="#1a4a2e"/>
-    <path d="M84 56 Q89 50 94 56 Z" fill="#1a4a2e"/>
-    <rect x="87" y="49" width="4" height="8" rx="2" fill="#1a4a2e"/>
-    <circle cx="89" cy="48" r="2" fill="#c9941a"/>
-    <!-- Door -->
-    <path d="M52 72 Q52 63 60 62 Q68 63 68 72 Z" fill="#0d3320"/>
-    <!-- Crescent -->
-    <path d="M57 38 Q60 34 64 37 Q61 35 58 39 Z" fill="#c9941a"/>
-    <!-- Stars -->
-    <circle cx="45" cy="36" r="1.5" fill="#c9941a"/>
-    <circle cx="75" cy="36" r="1.5" fill="#c9941a"/>
-    <circle cx="60" cy="30" r="1.5" fill="#c9941a"/>
-    <!-- Base -->
-    <rect x="24" y="72" width="72" height="4" rx="2" fill="#1a4a2e"/>
-  </svg>
-
-  <div class="bismillah-arabic">بِسْمِ اللهَِّ الرَّحْمَٰنِ الرَّحِيمِ</div>
-  <div class="bismillah-english">In the name of Allah, the Most Gracious, the Most Merciful</div>
-
-  <div class="divider">
-    <div class="divider-line"></div>
-    <span class="divider-star">✦</span>
-    <div class="divider-line right"></div>
-  </div>
-
-  <div class="main-title">Holy Qur'an Memorization Tracker</div>
-  <div class="subtitle">All 114 Surahs &bull; Prepared for Amir &amp; Farah</div>
-
-  <div class="info-grid">
-    <!-- Instructions -->
-    <div class="info-card">
-      <h3>How to use this tracker</h3>
-      <div class="info-row">
-        <span class="info-label">Read:</span>
-        <span class="info-text">Tick once you have correctly recited / reviewed the surah.</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Memorized:</span>
-        <span class="info-text">Tick once it is committed to heart (hifz).</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Notes:</span>
-        <span class="info-text">Jot tajweed reminders, dates, or difficult ayat.</span>
-      </div>
-      <div class="legend">Amir = green checkboxes &nbsp;&nbsp; Farah = teal checkboxes</div>
-    </div>
-
-    <!-- Progress -->
-    <div class="info-card">
-      <h3>Our progress</h3>
-      <div class="progress-person">
-        <div class="progress-person-label amir">Amir</div>
-        <div class="progress-stats">
-          <span class="progress-count amir" id="amir-count">0</span>
-          <span class="progress-of">/ 114 surahs memorized</span>
-        </div>
-        <div class="progress-bar-track"><div class="progress-bar-fill amir" id="amir-bar" style="width:0%"></div></div>
-        <div class="started-row">
-          Started: <input type="date" class="started-input" id="amir-started" placeholder="Pick a date">
-        </div>
-      </div>
-      <div class="progress-person">
-        <div class="progress-person-label farah">Farah</div>
-        <div class="progress-stats">
-          <span class="progress-count farah" id="farah-count">0</span>
-          <span class="progress-of">/ 114 surahs memorized</span>
-        </div>
-        <div class="progress-bar-track"><div class="progress-bar-fill farah" id="farah-bar" style="width:0%"></div></div>
-        <div class="started-row">
-          Started: <input type="date" class="started-input" id="farah-started" placeholder="Pick a date">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="quran-quote">
-    <div class="quran-quote-arabic">رَبِّ زِدْنِي عِلْمًا</div>
-    <div class="quran-quote-english">"My Lord, increase me in knowledge." (Qur'an 20:114)</div>
-  </div>
+<!-- App Header -->
+<header class="app-header">
+  <div class="app-header-title">Holy Qur'an — Amir &amp; Farah</div>
+  <div class="app-header-sub">Memorization Tracker &amp; Punch Clock</div>
 </header>
 
-<!-- MAIN TABLE -->
-<main class="main-content">
-  <!-- Toolbar -->
-  <div class="toolbar">
-    <input type="text" class="search-input" id="search" placeholder="Search surah name, meaning or number…">
-    <button class="filter-btn active" data-filter="all">All (114)</button>
-    <button class="filter-btn" data-filter="amir-mem">Amir Memorized</button>
-    <button class="filter-btn" data-filter="farah-mem">Farah Memorized</button>
-    <button class="filter-btn" data-filter="neither-mem">Not Yet Memorized</button>
-    <button class="reset-btn" id="reset-btn" title="Clear all checkboxes and notes">Reset All</button>
+<!-- Tab Bar (top on desktop, bottom-nav on mobile) -->
+<nav class="tab-bar" id="tab-bar">
+  <button class="tab-btn active" data-tab="tracker">
+    <svg viewBox="0 0 24 24"><polyline class="tab-icon" points="9 11 12 14 22 4"/><path class="tab-icon" d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    Tracker
+  </button>
+  <button class="tab-btn" data-tab="punch">
+    <svg viewBox="0 0 24 24"><circle class="tab-icon" cx="12" cy="12" r="10"/><polyline class="tab-icon" points="12 6 12 12 16 14"/></svg>
+    Punch Clock
+  </button>
+  <button class="tab-btn" data-tab="log">
+    <svg viewBox="0 0 24 24"><path class="tab-icon" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline class="tab-icon" points="14 2 14 8 20 8"/><line class="tab-icon" x1="16" y1="13" x2="8" y2="13"/><line class="tab-icon" x1="16" y1="17" x2="8" y2="17"/><polyline class="tab-icon" points="10 9 9 9 8 9"/></svg>
+    Log
+  </button>
+</nav>
+
+<!-- ══════════════ PAGE: TRACKER ══════════════ -->
+<div class="page active" id="page-tracker">
+
+  <div class="tracker-hero">
+    <svg class="mosque-svg" viewBox="0 0 120 120" fill="none">
+      <circle cx="60" cy="60" r="56" stroke="#1a4a2e" stroke-width="2"/>
+      <path d="M36 75 Q36 50 60 46 Q84 50 84 75 Z" fill="#1a4a2e"/>
+      <path d="M44 75 Q44 56 60 52 Q76 56 76 75 Z" fill="#2d6e47"/>
+      <rect x="24" y="58" width="10" height="17" rx="1" fill="#1a4a2e"/>
+      <path d="M24 58 Q29 52 34 58 Z" fill="#1a4a2e"/>
+      <rect x="27" y="51" width="4" height="8" rx="2" fill="#1a4a2e"/>
+      <circle cx="29" cy="50" r="2" fill="#c9941a"/>
+      <rect x="86" y="58" width="10" height="17" rx="1" fill="#1a4a2e"/>
+      <path d="M86 58 Q91 52 96 58 Z" fill="#1a4a2e"/>
+      <rect x="89" y="51" width="4" height="8" rx="2" fill="#1a4a2e"/>
+      <circle cx="91" cy="50" r="2" fill="#c9941a"/>
+      <path d="M52 75 Q52 65 60 63 Q68 65 68 75 Z" fill="#0d3320"/>
+      <rect x="22" y="75" width="76" height="4" rx="2" fill="#1a4a2e"/>
+      <path d="M57 40 Q60 35 64 38 Q61 36 58 41 Z" fill="#c9941a"/>
+      <circle cx="45" cy="38" r="1.5" fill="#c9941a"/>
+      <circle cx="75" cy="38" r="1.5" fill="#c9941a"/>
+    </svg>
+    <div class="bismillah-ar">بِسْمِ اللهَِّ الرَّحْمَٰنِ الرَّحِيمِ</div>
+    <div class="bismillah-en">In the name of Allah, the Most Gracious, the Most Merciful</div>
+    <div class="divider"><div class="divider-line l"></div><span class="divider-star">✦</span><div class="divider-line r"></div></div>
+    <div class="hero-title">Memorization Tracker</div>
+    <div class="hero-sub">All 114 Surahs</div>
   </div>
 
-  <div class="table-wrapper">
+  <!-- Progress -->
+  <div class="progress-row">
+    <div class="prog-card">
+      <div class="prog-name amir">Amir</div>
+      <div style="display:flex;align-items:baseline;gap:4px">
+        <div class="prog-num amir" id="t-amir-count">0</div>
+        <div class="prog-of">/ 114 memorized</div>
+      </div>
+      <div class="prog-bar"><div class="prog-fill amir" id="t-amir-bar" style="width:0%"></div></div>
+      <div class="prog-started">Started: <input type="date" class="prog-date-input" id="t-amir-started"></div>
+    </div>
+    <div class="prog-card">
+      <div class="prog-name farah">Farah</div>
+      <div style="display:flex;align-items:baseline;gap:4px">
+        <div class="prog-num farah" id="t-farah-count">0</div>
+        <div class="prog-of">/ 114 memorized</div>
+      </div>
+      <div class="prog-bar"><div class="prog-fill farah" id="t-farah-bar" style="width:0%"></div></div>
+      <div class="prog-started">Started: <input type="date" class="prog-date-input" id="t-farah-started"></div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="tracker-toolbar">
+    <input type="search" class="search-box" id="t-search" placeholder="Search surah…">
+    <div class="filter-wrap">
+      <button class="filt-btn active" data-filter="all">All</button>
+      <button class="filt-btn" data-filter="amir-mem">Amir ✓</button>
+      <button class="filt-btn" data-filter="farah-mem">Farah ✓</button>
+      <button class="filt-btn" data-filter="neither">Pending</button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
     <table id="surah-table">
       <colgroup>
-        <col style="width:40px">
-        <col style="width:110px">
-        <col style="width:140px">
-        <col>
-        <col style="width:50px">
-        <!-- Amir -->
-        <col style="width:44px">
-        <col style="width:44px">
-        <!-- Farah -->
-        <col style="width:44px">
-        <col style="width:44px">
-        <!-- Notes -->
+        <col style="width:30px"><col style="width:80px"><col><col style="width:35px">
+        <col style="width:32px"><col style="width:32px">
+        <col style="width:32px"><col style="width:32px">
         <col>
       </colgroup>
       <thead>
         <tr>
-          <th rowspan="2" class="left" style="padding-left:12px">#</th>
+          <th rowspan="2" class="tl" style="padding-left:8px">#</th>
           <th rowspan="2">Surah</th>
-          <th rowspan="2" class="left">Name</th>
-          <th rowspan="2" class="left">Meaning</th>
+          <th rowspan="2" class="tl">Name</th>
           <th rowspan="2">Ayat</th>
-          <th colspan="2" class="th-group amir-group">AMIR</th>
-          <th colspan="2" class="th-group farah-group">FARAH</th>
-          <th rowspan="2" class="left">Notes</th>
+          <th colspan="2" class="th-group" style="color:rgba(255,255,255,0.9)">AMIR</th>
+          <th colspan="2" class="th-group" style="color:rgba(255,255,255,0.9)">FARAH</th>
+          <th rowspan="2" class="tl">Notes</th>
         </tr>
         <tr>
-          <th>Read</th><th>Mem</th>
-          <th>Read</th><th>Mem</th>
+          <th style="font-size:0.6rem">Rd</th><th style="font-size:0.6rem">Mem</th>
+          <th style="font-size:0.6rem">Rd</th><th style="font-size:0.6rem">Mem</th>
         </tr>
       </thead>
-      <tbody id="surah-tbody">
-        <!-- Rows generated by JS -->
-      </tbody>
+      <tbody id="surah-tbody"></tbody>
     </table>
   </div>
-</main>
+</div>
 
-<!-- FOOTER -->
-<footer class="page-footer">
-  <div class="footer-inner">
-    <svg class="corner-star tl" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
-    <svg class="corner-star tr" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
-    <div class="divider"><div class="divider-line"></div><span class="divider-star">✦</span><div class="divider-line right"></div></div>
-    <div class="footer-dua-arabic">May Allah place the Qur'an in your hearts and make it a light upon your path.</div>
-    <div class="footer-ameen">آمِين</div>
+<!-- ══════════════ PAGE: PUNCH CLOCK ══════════════ -->
+<div class="page" id="page-punch">
+  <div class="punch-page">
+    <div class="punch-header">
+      <div class="divider"><div class="divider-line l"></div><span class="divider-star">✦</span><div class="divider-line r"></div></div>
+      <div class="punch-title">Qur'an Punch Clock</div>
+      <div class="punch-subtitle">Track when you start &amp; finish reading or memorizing</div>
+    </div>
+
+    <div class="person-cards-wrap">
+      <!-- Amir Card -->
+      <div class="person-card amir" id="card-amir">
+        <div class="person-name amir">Amir</div>
+        <div class="person-status" id="status-amir">Idle</div>
+        <div class="timer-display amir-timer" id="timer-amir">0:00</div>
+
+        <div class="field-label">Surah</div>
+        <select class="surah-select" id="surah-amir"></select>
+
+        <div class="field-label">Activity</div>
+        <div class="activity-row">
+          <button class="act-btn sel-amir" data-person="amir" data-act="Reading">Reading</button>
+          <button class="act-btn" data-person="amir" data-act="Memorizing">Memorizing</button>
+        </div>
+
+        <div class="punch-btns">
+          <button class="punch-in-btn" id="in-amir" onclick="punchIn('amir')">Punch In</button>
+          <button class="punch-out-btn" id="out-amir" disabled onclick="punchOut('amir')">Punch Out</button>
+        </div>
+      </div>
+
+      <!-- Farah Card -->
+      <div class="person-card farah" id="card-farah">
+        <div class="person-name farah">Farah</div>
+        <div class="person-status" id="status-farah">Idle</div>
+        <div class="timer-display farah-timer" id="timer-farah">0:00</div>
+
+        <div class="field-label">Surah</div>
+        <select class="surah-select" id="surah-farah"></select>
+
+        <div class="field-label">Activity</div>
+        <div class="activity-row">
+          <button class="act-btn sel-farah" data-person="farah" data-act="Reading">Reading</button>
+          <button class="act-btn" data-person="farah" data-act="Memorizing">Memorizing</button>
+        </div>
+
+        <div class="punch-btns">
+          <button class="punch-in-btn teal" id="in-farah" onclick="punchIn('farah')">Punch In</button>
+          <button class="punch-out-btn" id="out-farah" disabled onclick="punchOut('farah')">Punch Out</button>
+        </div>
+      </div>
+    </div>
   </div>
-</footer>
+</div>
+
+<!-- ══════════════ PAGE: LOG ══════════════ -->
+<div class="page" id="page-log">
+  <div class="log-page">
+    <div class="log-header">
+      <div class="log-title">Session Log</div>
+      <div>
+        <button class="export-btn" onclick="exportCSV()">Export CSV</button>
+        <button class="clear-btn" onclick="clearLog()">Clear</button>
+      </div>
+    </div>
+    <div id="log-container"><div class="log-empty">No sessions logged yet.<br>Use the Punch Clock tab to start tracking.</div></div>
+  </div>
+</div>
+
+<!-- Install Banner -->
+<div id="install-banner">
+  <div>
+    <div class="install-text">Add to Home Screen</div>
+    <div class="install-sub">Install as an app for quick access</div>
+  </div>
+  <div class="install-btns">
+    <button class="install-yes" id="install-yes">Install</button>
+    <button class="install-no" id="install-no">Not now</button>
+  </div>
+</div>
+
+<!-- Bottom Nav (mobile) -->
+<nav class="bottom-nav" id="bottom-nav">
+  <div class="tab-bar" id="bottom-tab-bar">
+    <button class="tab-btn active" data-tab="tracker">
+      <svg viewBox="0 0 24 24"><polyline class="tab-icon" points="9 11 12 14 22 4"/><path class="tab-icon" d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Tracker
+    </button>
+    <button class="tab-btn" data-tab="punch">
+      <svg viewBox="0 0 24 24"><circle class="tab-icon" cx="12" cy="12" r="10"/><polyline class="tab-icon" points="12 6 12 12 16 14"/></svg>
+      Punch Clock
+    </button>
+    <button class="tab-btn" data-tab="log">
+      <svg viewBox="0 0 24 24"><path class="tab-icon" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline class="tab-icon" points="14 2 14 8 20 8"/><line class="tab-icon" x1="16" y1="13" x2="8" y2="13"/><line class="tab-icon" x1="16" y1="17" x2="8" y2="17"/></svg>
+      Log
+    </button>
+  </div>
+</nav>
 
 <div class="toast" id="toast"></div>
 
 <script>
+// ══════════════════════════════════════
+// DATA
+// ══════════════════════════════════════
 const SURAHS = [
   [1,"الفاتحة","Al-Fatihah","The Opening",7],
   [2,"البقرة","Al-Baqarah","The Cow",286],
@@ -834,175 +735,351 @@ const SURAHS = [
   [114,"الناس","An-Nas","Mankind",6]
 ];
 
-const STORAGE_KEY = 'quran-tracker-v1';
+// ══════════════════════════════════════
+// TAB NAVIGATION
+// ══════════════════════════════════════
+function switchTab(tabId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + tabId).classList.add('active');
+  document.querySelectorAll('[data-tab="' + tabId + '"]').forEach(b => b.classList.add('active'));
+  if (tabId === 'log') renderLog();
+}
 
-// ── State ──
-function defaultState() {
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+// ══════════════════════════════════════
+// TRACKER STATE
+// ══════════════════════════════════════
+const TRACK_KEY = 'quran-tracker-v1';
+
+function defaultTrackState() {
   return {
-    amir_started: '',
-    farah_started: '',
-    rows: SURAHS.map(([num]) => ({
-      num,
-      ar: false, am: false,
-      fr: false, fm: false,
-      notes: ''
-    }))
+    amir_started: '', farah_started: '',
+    rows: SURAHS.map(([num]) => ({ num, ar:false, am:false, fr:false, fm:false, notes:'' }))
   };
 }
 
-function loadState() {
+function loadTrackState() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return defaultState();
-    const parsed = JSON.parse(raw);
-    // Ensure all rows exist
-    const state = defaultState();
-    state.amir_started = parsed.amir_started || '';
-    state.farah_started = parsed.farah_started || '';
-    if (parsed.rows) {
-      parsed.rows.forEach(r => {
-        const idx = state.rows.findIndex(x => x.num === r.num);
-        if (idx !== -1) state.rows[idx] = { ...state.rows[idx], ...r };
-      });
-    }
-    return state;
-  } catch { return defaultState(); }
+    const raw = localStorage.getItem(TRACK_KEY);
+    if (!raw) return defaultTrackState();
+    const p = JSON.parse(raw), s = defaultTrackState();
+    s.amir_started = p.amir_started || '';
+    s.farah_started = p.farah_started || '';
+    if (p.rows) p.rows.forEach(r => { const i = s.rows.findIndex(x => x.num === r.num); if (i !== -1) s.rows[i] = {...s.rows[i], ...r}; });
+    return s;
+  } catch { return defaultTrackState(); }
 }
 
-function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-}
+function saveTrackState() { localStorage.setItem(TRACK_KEY, JSON.stringify(trackState)); }
 
-let state = loadState();
+let trackState = loadTrackState();
 
-// ── Build table ──
+// Build tracker table
 function buildTable() {
   const tbody = document.getElementById('surah-tbody');
   tbody.innerHTML = '';
-  SURAHS.forEach(([num, arabic, name, meaning, ayat]) => {
-    const r = state.rows[num - 1];
+  SURAHS.forEach(([num, ar, name, meaning, ayat]) => {
+    const r = trackState.rows[num-1];
     const tr = document.createElement('tr');
     tr.dataset.num = num;
-    tr.dataset.name = name.toLowerCase();
-    tr.dataset.meaning = meaning.toLowerCase();
-
+    tr.dataset.name = (name + ' ' + meaning).toLowerCase();
     tr.innerHTML = `
       <td class="td-num">${num}</td>
-      <td class="td-arabic">${arabic}</td>
+      <td class="td-ar">${ar}</td>
       <td class="td-name">${name}</td>
-      <td class="td-meaning">${meaning}</td>
       <td class="td-ayat">${ayat}</td>
-      <td class="td-check"><input type="checkbox" class="custom-checkbox amir-read" data-num="${num}" data-field="ar" ${r.ar?'checked':''}></td>
-      <td class="td-check"><input type="checkbox" class="custom-checkbox amir-mem"  data-num="${num}" data-field="am" ${r.am?'checked':''}></td>
-      <td class="td-check"><input type="checkbox" class="custom-checkbox farah-read" data-num="${num}" data-field="fr" ${r.fr?'checked':''}></td>
-      <td class="td-check"><input type="checkbox" class="custom-checkbox farah-mem"  data-num="${num}" data-field="fm" ${r.fm?'checked':''}></td>
-      <td class="td-notes"><input type="text" class="notes-input" data-num="${num}" placeholder="Notes…" value="${escapeAttr(r.notes)}"></td>
-    `;
+      <td class="td-cb"><input type="checkbox" class="cb ar" data-num="${num}" data-f="ar" ${r.ar?'checked':''}></td>
+      <td class="td-cb"><input type="checkbox" class="cb am" data-num="${num}" data-f="am" ${r.am?'checked':''}></td>
+      <td class="td-cb"><input type="checkbox" class="cb fr" data-num="${num}" data-f="fr" ${r.fr?'checked':''}></td>
+      <td class="td-cb"><input type="checkbox" class="cb fm" data-num="${num}" data-f="fm" ${r.fm?'checked':''}></td>
+      <td class="td-notes"><input type="text" class="notes-in" data-num="${num}" placeholder="Notes…" value="${(r.notes||'').replace(/"/g,'&quot;')}"></td>`;
     tbody.appendChild(tr);
   });
 }
 
-function escapeAttr(s) {
-  return (s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;');
-}
-
-// ── Checkboxes ──
 document.getElementById('surah-tbody').addEventListener('change', e => {
   const el = e.target;
-  if (el.classList.contains('custom-checkbox')) {
-    const num = +el.dataset.num;
-    const field = el.dataset.field;
-    state.rows[num - 1][field] = el.checked;
-    saveState();
-    updateProgress();
-    applyFilter();
-  }
-  if (el.classList.contains('notes-input')) {
-    // handled by input event
+  if (el.classList.contains('cb')) {
+    trackState.rows[+el.dataset.num - 1][el.dataset.f] = el.checked;
+    saveTrackState(); updateProgress(); applyFilter();
   }
 });
-
 document.getElementById('surah-tbody').addEventListener('input', e => {
   const el = e.target;
-  if (el.classList.contains('notes-input')) {
-    const num = +el.dataset.num;
-    state.rows[num - 1].notes = el.value;
-    saveState();
+  if (el.classList.contains('notes-in')) {
+    trackState.rows[+el.dataset.num - 1].notes = el.value;
+    saveTrackState();
   }
 });
 
-// ── Progress ──
 function updateProgress() {
-  const amir = state.rows.filter(r => r.am).length;
-  const farah = state.rows.filter(r => r.fm).length;
-  document.getElementById('amir-count').textContent = amir;
-  document.getElementById('farah-count').textContent = farah;
-  document.getElementById('amir-bar').style.width = (amir/114*100).toFixed(1) + '%';
-  document.getElementById('farah-bar').style.width = (farah/114*100).toFixed(1) + '%';
+  const am = trackState.rows.filter(r => r.am).length;
+  const fm = trackState.rows.filter(r => r.fm).length;
+  document.getElementById('t-amir-count').textContent = am;
+  document.getElementById('t-farah-count').textContent = fm;
+  document.getElementById('t-amir-bar').style.width = (am/114*100).toFixed(1)+'%';
+  document.getElementById('t-farah-bar').style.width = (fm/114*100).toFixed(1)+'%';
 }
 
-// ── Started dates ──
-const amirStarted = document.getElementById('amir-started');
-const farahStarted = document.getElementById('farah-started');
-amirStarted.value = state.amir_started || '';
-farahStarted.value = state.farah_started || '';
-amirStarted.addEventListener('change', () => { state.amir_started = amirStarted.value; saveState(); });
-farahStarted.addEventListener('change', () => { state.farah_started = farahStarted.value; saveState(); });
+// Dates
+const taStart = document.getElementById('t-amir-started');
+const tfStart = document.getElementById('t-farah-started');
+taStart.value = trackState.amir_started || '';
+tfStart.value = trackState.farah_started || '';
+taStart.addEventListener('change', () => { trackState.amir_started = taStart.value; saveTrackState(); });
+tfStart.addEventListener('change', () => { trackState.farah_started = tfStart.value; saveTrackState(); });
 
-// ── Search + filter ──
+// Filter / Search
 let currentFilter = 'all';
-
 function applyFilter() {
-  const q = document.getElementById('search').value.toLowerCase().trim();
+  const q = document.getElementById('t-search').value.toLowerCase().trim();
   document.querySelectorAll('#surah-tbody tr').forEach(tr => {
-    const num = +tr.dataset.num;
-    const r = state.rows[num - 1];
-
-    let matchSearch = !q ||
-      tr.dataset.num.includes(q) ||
-      tr.dataset.name.includes(q) ||
-      tr.dataset.meaning.includes(q);
-
-    let matchFilter = true;
-    if (currentFilter === 'amir-mem') matchFilter = r.am;
-    else if (currentFilter === 'farah-mem') matchFilter = r.fm;
-    else if (currentFilter === 'neither-mem') matchFilter = !r.am && !r.fm;
-
-    tr.classList.toggle('hidden', !(matchSearch && matchFilter));
+    const r = trackState.rows[+tr.dataset.num - 1];
+    const ms = !q || tr.dataset.num.includes(q) || tr.dataset.name.includes(q);
+    const mf = currentFilter === 'all' ? true
+      : currentFilter === 'amir-mem' ? r.am
+      : currentFilter === 'farah-mem' ? r.fm
+      : (!r.am && !r.fm);
+    tr.classList.toggle('hidden', !(ms && mf));
   });
 }
-
-document.getElementById('search').addEventListener('input', applyFilter);
-
-document.querySelectorAll('.filter-btn').forEach(btn => {
+document.getElementById('t-search').addEventListener('input', applyFilter);
+document.querySelectorAll('.filt-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.filt-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     currentFilter = btn.dataset.filter;
     applyFilter();
   });
 });
 
-// ── Reset ──
-document.getElementById('reset-btn').addEventListener('click', () => {
-  if (!confirm('Reset ALL progress? This cannot be undone.')) return;
-  state = defaultState();
-  saveState();
-  buildTable();
-  updateProgress();
-  applyFilter();
-  showToast('All progress reset.');
+// ══════════════════════════════════════
+// PUNCH CLOCK STATE
+// ══════════════════════════════════════
+const PUNCH_KEY = 'quran-punch-v1';
+
+function loadPunchState() {
+  try { return JSON.parse(localStorage.getItem(PUNCH_KEY)) || { sessions: {}, log: [] }; }
+  catch { return { sessions: {}, log: [] }; }
+}
+function savePunchState() { localStorage.setItem(PUNCH_KEY, JSON.stringify(punchState)); }
+
+let punchState = loadPunchState();
+let timerIntervals = {};
+let activitySel = { amir: 'Reading', farah: 'Reading' };
+
+// Populate surah selects
+['amir', 'farah'].forEach(p => {
+  const sel = document.getElementById('surah-' + p);
+  SURAHS.forEach(([n, , name, meaning]) => {
+    const opt = document.createElement('option');
+    opt.value = `${n} - ${name} (${meaning})`;
+    opt.textContent = `${n}. ${name} — ${meaning}`;
+    sel.appendChild(opt);
+  });
 });
 
-// ── Toast ──
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
+// Activity buttons
+document.querySelectorAll('.act-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const person = btn.dataset.person;
+    activitySel[person] = btn.dataset.act;
+    document.querySelectorAll(`.act-btn[data-person="${person}"]`).forEach(b => {
+      b.classList.remove('sel-amir', 'sel-farah');
+    });
+    btn.classList.add('sel-' + person);
+  });
+});
+
+function fmtTime(dt) {
+  return dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
 }
 
-// ── Init ──
+function fmtElapsed(startIso) {
+  const secs = Math.floor((Date.now() - new Date(startIso).getTime()) / 1000);
+  const m = Math.floor(secs / 60), s = secs % 60;
+  return `${m}:${String(s).padStart(2,'0')}`;
+}
+
+function startTimer(person) {
+  const timerEl = document.getElementById('timer-' + person);
+  timerEl.classList.add('running');
+  timerIntervals[person] = setInterval(() => {
+    const sess = punchState.sessions[person];
+    if (sess) timerEl.textContent = fmtElapsed(sess.start);
+  }, 1000);
+}
+
+function stopTimer(person) {
+  clearInterval(timerIntervals[person]);
+  const timerEl = document.getElementById('timer-' + person);
+  timerEl.classList.remove('running');
+  timerEl.textContent = '0:00';
+}
+
+function setActive(person, active, sess) {
+  const inBtn = document.getElementById('in-' + person);
+  const outBtn = document.getElementById('out-' + person);
+  const statusEl = document.getElementById('status-' + person);
+  const surahSel = document.getElementById('surah-' + person);
+  const isPerson = person === 'amir';
+
+  if (active && sess) {
+    inBtn.disabled = true;
+    outBtn.disabled = false;
+    outBtn.classList.add(isPerson ? 'active-amir' : 'active-farah');
+    surahSel.disabled = true;
+    statusEl.className = 'person-status ' + (isPerson ? 'active-amir' : 'active-farah');
+    statusEl.textContent = `● IN since ${fmtTime(new Date(sess.start))} · ${sess.activity} · ${sess.surah.split(' - ')[1] || sess.surah}`;
+    startTimer(person);
+  } else {
+    inBtn.disabled = false;
+    outBtn.disabled = true;
+    outBtn.classList.remove('active-amir', 'active-farah');
+    surahSel.disabled = false;
+    statusEl.className = 'person-status';
+    statusEl.textContent = 'Idle';
+    stopTimer(person);
+  }
+}
+
+function punchIn(person) {
+  const now = new Date();
+  const surah = document.getElementById('surah-' + person).value;
+  const activity = activitySel[person];
+  const sess = { surah, activity, start: now.toISOString() };
+  punchState.sessions[person] = sess;
+  punchState.log.unshift({
+    ts: now.toISOString(), person, action: 'IN',
+    surah, activity, duration: null
+  });
+  savePunchState();
+  setActive(person, true, sess);
+  showToast(`${person === 'amir' ? 'Amir' : 'Farah'} punched IN ✓`);
+}
+
+function punchOut(person) {
+  const now = new Date();
+  const sess = punchState.sessions[person];
+  if (!sess) return;
+  const mins = Math.round((now - new Date(sess.start)) / 60000);
+  // Update the IN entry with duration
+  const inEntry = punchState.log.find(e => e.person === person && e.action === 'IN' && e.ts === sess.start);
+  if (inEntry) inEntry.duration = mins;
+  punchState.log.unshift({
+    ts: now.toISOString(), person, action: 'OUT',
+    surah: sess.surah, activity: sess.activity, duration: mins
+  });
+  punchState.sessions[person] = null;
+  savePunchState();
+  setActive(person, false);
+  showToast(`${person === 'amir' ? 'Amir' : 'Farah'} punched OUT · ${mins} min`);
+}
+
+// Restore active sessions on load
+['amir', 'farah'].forEach(p => {
+  const sess = punchState.sessions[p];
+  if (sess) {
+    const surahSel = document.getElementById('surah-' + p);
+    for (const opt of surahSel.options) {
+      if (opt.value === sess.surah) { surahSel.value = sess.surah; break; }
+    }
+    activitySel[p] = sess.activity;
+    document.querySelectorAll(`.act-btn[data-person="${p}"]`).forEach(b => {
+      b.classList.remove('sel-amir', 'sel-farah');
+      if (b.dataset.act === sess.activity) b.classList.add('sel-' + p);
+    });
+    setActive(p, true, sess);
+  }
+});
+
+// ══════════════════════════════════════
+// LOG
+// ══════════════════════════════════════
+function renderLog() {
+  const cont = document.getElementById('log-container');
+  if (!punchState.log.length) {
+    cont.innerHTML = '<div class="log-empty">No sessions logged yet.<br>Use the Punch Clock tab to start tracking.</div>';
+    return;
+  }
+  cont.innerHTML = punchState.log.slice(0, 100).map(e => {
+    const d = new Date(e.ts);
+    const dateStr = d.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short' });
+    const timeStr = fmtTime(d);
+    const surahShort = (e.surah || '').replace(/\(.*\)/, '').trim();
+    const durStr = e.action === 'OUT' && e.duration != null ? `<span class="log-duration">${e.duration} min</span>` : '';
+    return `<div class="log-entry">
+      <div class="log-entry-top">
+        <span class="log-person ${e.person}">${e.person === 'amir' ? 'Amir' : 'Farah'}</span>
+        <span class="log-action ${e.action.toLowerCase()}">${e.action}</span>
+      </div>
+      <div class="log-surah">${e.activity} · ${surahShort}</div>
+      <div class="log-meta">${dateStr} at ${timeStr} ${durStr}</div>
+    </div>`;
+  }).join('');
+}
+
+function exportCSV() {
+  if (!punchState.log.length) { showToast('No data to export'); return; }
+  const rows = [['timestamp','person','action','surah','activity','duration_min']];
+  punchState.log.forEach(e => rows.push([e.ts, e.person, e.action, e.surah, e.activity, e.duration ?? '']));
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'quran_punch_log.csv';
+  a.click();
+  showToast('CSV downloaded');
+}
+
+function clearLog() {
+  if (!confirm('Clear all log entries?')) return;
+  punchState.log = [];
+  savePunchState();
+  renderLog();
+  showToast('Log cleared');
+}
+
+// ══════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ══════════════════════════════════════
+// PWA INSTALL
+// ══════════════════════════════════════
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (!localStorage.getItem('pwa-dismissed')) {
+    document.getElementById('install-banner').classList.add('show');
+  }
+});
+document.getElementById('install-yes').addEventListener('click', () => {
+  document.getElementById('install-banner').classList.remove('show');
+  if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt = null; }
+});
+document.getElementById('install-no').addEventListener('click', () => {
+  document.getElementById('install-banner').classList.remove('show');
+  localStorage.setItem('pwa-dismissed', '1');
+});
+
+// Service Worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(() => {});
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
 buildTable();
 updateProgress();
 </script>
