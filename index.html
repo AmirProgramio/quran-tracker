@@ -12,6 +12,7 @@
   <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
   <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
   <title>Holy Qur'an Tracker — Amir &amp; Farah</title>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -411,6 +412,85 @@
       white-space: nowrap;
     }
 
+    /* ── SETTINGS ── */
+    .gear-btn {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      background: transparent; border: none; cursor: pointer; color: rgba(255,255,255,0.75);
+      font-size: 1.2rem; line-height: 1; padding: 4px;
+    }
+    .gear-btn:hover { color: white; }
+
+    .settings-field { margin-bottom: 14px; }
+    .settings-label {
+      display: block; font-size: 0.72rem; font-weight: 700; color: var(--text-mid);
+      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px;
+    }
+    .settings-input {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+      border-radius: 8px; font-size: 0.88rem; color: var(--text-dark);
+      background: var(--cream); outline: none; font-family: 'Inter', sans-serif;
+    }
+    .settings-input:focus { border-color: var(--green-mid); background: white; }
+    .settings-input.mono { font-family: monospace; font-size: 0.82rem; }
+
+    .settings-note {
+      font-size: 0.75rem; color: var(--text-light); margin-top: 4px; line-height: 1.4;
+    }
+    .settings-note a { color: var(--green-mid); }
+
+    .settings-section-title {
+      font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700;
+      color: var(--green-dark); margin: 18px 0 12px; padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .settings-section-title:first-of-type { border-top: none; margin-top: 0; padding-top: 0; }
+
+    .setup-steps { background: var(--cream-mid); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; }
+    .setup-step { display: flex; gap: 10px; margin-bottom: 10px; font-size: 0.8rem; line-height: 1.5; color: var(--text-dark); }
+    .setup-step:last-child { margin-bottom: 0; }
+    .setup-num {
+      width: 20px; height: 20px; border-radius: 50%; background: var(--green-dark);
+      color: white; font-size: 0.7rem; font-weight: 700; display: flex;
+      align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+    }
+    .setup-step a { color: var(--green-mid); font-weight: 600; }
+
+    .email-status-dot {
+      display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+      background: #ccc; margin-right: 6px; vertical-align: middle;
+    }
+    .email-status-dot.ok { background: #3a8a5a; }
+    .email-status-dot.err { background: #c0392b; }
+
+    .settings-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+    .settings-save {
+      padding: 12px; background: var(--green-dark); color: white;
+      border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; cursor: pointer;
+    }
+    .settings-test {
+      padding: 12px; background: white; color: var(--green-dark);
+      border: 1px solid var(--green-dark); border-radius: 10px;
+      font-size: 0.9rem; font-weight: 700; cursor: pointer;
+    }
+
+    .toggle-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .toggle-label { font-size: 0.85rem; color: var(--text-dark); }
+    .toggle {
+      width: 42px; height: 24px; background: #ccc; border-radius: 12px;
+      position: relative; cursor: pointer; transition: background 0.2s; border: none;
+      flex-shrink: 0;
+    }
+    .toggle::after {
+      content: ''; position: absolute; width: 18px; height: 18px;
+      background: white; border-radius: 50%; top: 3px; left: 3px;
+      transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .toggle.on { background: var(--green-mid); }
+    .toggle.on::after { transform: translateX(18px); }
+
     /* ── BOTTOM NAV (sticky) ── */
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0;
@@ -454,6 +534,7 @@
 
 <!-- App Header -->
 <header class="app-header" style="position:relative">
+  <button class="gear-btn" onclick="openSettings()" title="Email settings">⚙️</button>
   <div class="app-header-title">Holy Qur'an — Amir &amp; Farah</div>
   <div class="app-header-sub">Memorization Tracker &amp; Punch Clock</div>
   <button class="install-btn-header" id="header-install-btn" onclick="openInstallModal()" title="Install as app">⬇ Install</button>
@@ -690,6 +771,92 @@
     </div>
 
     <button class="modal-close" onclick="closeInstallModal()">Got it</button>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal-overlay" id="settings-modal" onclick="closeSettingsIfBg(event)">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-title">⚙️ Email Notifications</div>
+
+    <!-- Setup Instructions -->
+    <div class="settings-section-title">Setup (one time, takes ~2 min)</div>
+    <div class="setup-steps">
+      <div class="setup-step"><div class="setup-num">1</div><div>Go to <a href="https://www.emailjs.com" target="_blank">emailjs.com</a> and sign up for a <strong>free account</strong>.</div></div>
+      <div class="setup-step"><div class="setup-num">2</div><div>Click <strong>Email Services</strong> → <strong>Add New Service</strong> → pick Gmail → connect your Gmail account. Copy the <strong>Service ID</strong>.</div></div>
+      <div class="setup-step"><div class="setup-num">3</div><div>Click <strong>Email Templates</strong> → <strong>Create New Template</strong>. Paste the template below, then save. Copy the <strong>Template ID</strong>.</div></div>
+      <div class="setup-step"><div class="setup-num">4</div><div>Go to <strong>Account → General</strong> and copy your <strong>Public Key</strong>.</div></div>
+      <div class="setup-step"><div class="setup-num">5</div><div>Fill in the fields below and tap <strong>Save</strong>.</div></div>
+    </div>
+
+    <!-- Template to copy -->
+    <details style="margin-bottom:14px">
+      <summary style="font-size:0.8rem;font-weight:700;color:var(--green-dark);cursor:pointer;padding:6px 0">📋 Copy this into your EmailJS template</summary>
+      <div style="background:#1a1a1a;color:#f0f0f0;border-radius:8px;padding:12px;margin-top:8px;font-family:monospace;font-size:0.72rem;line-height:1.6;overflow-x:auto;white-space:pre">Subject: {{person}} punched {{action}} — {{activity}} {{surah}}
+
+Body:
+Assalamu alaikum,
+
+{{person}} has punched {{action}}.
+
+Activity : {{activity}}
+Surah    : {{surah}}
+Time     : {{punch_time}}
+Duration : {{duration}}
+
+— Qur'an Memorization Tracker</div>
+      <div style="font-size:0.72rem;color:var(--text-light);margin-top:6px">In EmailJS template editor, set <strong>To Email</strong> field to: <code>{{to_email}}</code></div>
+    </details>
+
+    <!-- Credentials -->
+    <div class="settings-section-title">EmailJS Credentials</div>
+
+    <div class="settings-field">
+      <label class="settings-label">Public Key</label>
+      <input type="text" class="settings-input mono" id="ejs-pubkey" placeholder="e.g. abc123XYZ_abcDEF">
+    </div>
+    <div class="settings-field">
+      <label class="settings-label">Service ID</label>
+      <input type="text" class="settings-input mono" id="ejs-service" placeholder="e.g. service_xxxxxxx">
+    </div>
+    <div class="settings-field">
+      <label class="settings-label">Template ID</label>
+      <input type="text" class="settings-input mono" id="ejs-template" placeholder="e.g. template_xxxxxxx">
+    </div>
+
+    <!-- Recipients -->
+    <div class="settings-section-title">Recipient Emails</div>
+
+    <div class="settings-field">
+      <label class="settings-label">Amir's Email</label>
+      <input type="email" class="settings-input" id="ejs-amir-email" placeholder="amir@example.com">
+    </div>
+    <div class="settings-field">
+      <label class="settings-label">Farah's Email</label>
+      <input type="email" class="settings-input" id="ejs-farah-email" placeholder="farah@example.com">
+    </div>
+
+    <!-- Toggles -->
+    <div class="settings-section-title">When to send</div>
+    <div class="toggle-row">
+      <span class="toggle-label">Email on Punch In</span>
+      <button class="toggle on" id="tog-in" onclick="toggleSetting('tog-in')"></button>
+    </div>
+    <div class="toggle-row">
+      <span class="toggle-label">Email on Punch Out</span>
+      <button class="toggle on" id="tog-out" onclick="toggleSetting('tog-out')"></button>
+    </div>
+
+    <div style="margin-top:10px;font-size:0.75rem;color:var(--text-light)">
+      <span class="email-status-dot" id="email-status-dot"></span>
+      <span id="email-status-text">Not configured</span>
+    </div>
+
+    <div class="settings-btns">
+      <button class="settings-test" onclick="sendTestEmail()">Send Test</button>
+      <button class="settings-save" onclick="saveSettings()">Save</button>
+    </div>
   </div>
 </div>
 
@@ -1064,13 +1231,11 @@ function punchIn(person) {
   const activity = activitySel[person];
   const sess = { surah, activity, start: now.toISOString() };
   punchState.sessions[person] = sess;
-  punchState.log.unshift({
-    ts: now.toISOString(), person, action: 'IN',
-    surah, activity, duration: null
-  });
+  punchState.log.unshift({ ts: now.toISOString(), person, action: 'IN', surah, activity, duration: null });
   savePunchState();
   setActive(person, true, sess);
   showToast(`${person === 'amir' ? 'Amir' : 'Farah'} punched IN ✓`);
+  if (emailSettings.togIn) sendPunchEmail(person, 'IN', surah, activity, fmtTime(now), null);
 }
 
 function punchOut(person) {
@@ -1078,17 +1243,14 @@ function punchOut(person) {
   const sess = punchState.sessions[person];
   if (!sess) return;
   const mins = Math.round((now - new Date(sess.start)) / 60000);
-  // Update the IN entry with duration
   const inEntry = punchState.log.find(e => e.person === person && e.action === 'IN' && e.ts === sess.start);
   if (inEntry) inEntry.duration = mins;
-  punchState.log.unshift({
-    ts: now.toISOString(), person, action: 'OUT',
-    surah: sess.surah, activity: sess.activity, duration: mins
-  });
+  punchState.log.unshift({ ts: now.toISOString(), person, action: 'OUT', surah: sess.surah, activity: sess.activity, duration: mins });
   punchState.sessions[person] = null;
   savePunchState();
   setActive(person, false);
   showToast(`${person === 'amir' ? 'Amir' : 'Farah'} punched OUT · ${mins} min`);
+  if (emailSettings.togOut) sendPunchEmail(person, 'OUT', sess.surah, sess.activity, fmtTime(now), mins);
 }
 
 // Restore active sessions on load
@@ -1162,6 +1324,141 @@ function showToast(msg) {
   t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2400);
 }
+
+// ══════════════════════════════════════
+// EMAIL SETTINGS
+// ══════════════════════════════════════
+const EMAIL_KEY = 'quran-email-v1';
+
+function defaultEmailSettings() {
+  return { pubkey: '', service: '', template: '', amirEmail: '', farahEmail: '', togIn: true, togOut: true };
+}
+
+function loadEmailSettings() {
+  try { return { ...defaultEmailSettings(), ...(JSON.parse(localStorage.getItem(EMAIL_KEY)) || {}) }; }
+  catch { return defaultEmailSettings(); }
+}
+
+function saveSettings() {
+  emailSettings.pubkey     = document.getElementById('ejs-pubkey').value.trim();
+  emailSettings.service    = document.getElementById('ejs-service').value.trim();
+  emailSettings.template   = document.getElementById('ejs-template').value.trim();
+  emailSettings.amirEmail  = document.getElementById('ejs-amir-email').value.trim();
+  emailSettings.farahEmail = document.getElementById('ejs-farah-email').value.trim();
+  localStorage.setItem(EMAIL_KEY, JSON.stringify(emailSettings));
+  if (emailSettings.pubkey) emailjs.init({ publicKey: emailSettings.pubkey });
+  updateEmailStatusBadge();
+  closeSettings();
+  showToast('Settings saved ✓');
+}
+
+function toggleSetting(id) {
+  const btn = document.getElementById(id);
+  const isOn = btn.classList.toggle('on');
+  if (id === 'tog-in') emailSettings.togIn = isOn;
+  else emailSettings.togOut = isOn;
+  localStorage.setItem(EMAIL_KEY, JSON.stringify(emailSettings));
+}
+
+function populateSettingsForm() {
+  document.getElementById('ejs-pubkey').value    = emailSettings.pubkey || '';
+  document.getElementById('ejs-service').value   = emailSettings.service || '';
+  document.getElementById('ejs-template').value  = emailSettings.template || '';
+  document.getElementById('ejs-amir-email').value = emailSettings.amirEmail || '';
+  document.getElementById('ejs-farah-email').value = emailSettings.farahEmail || '';
+  document.getElementById('tog-in').classList.toggle('on', emailSettings.togIn !== false);
+  document.getElementById('tog-out').classList.toggle('on', emailSettings.togOut !== false);
+  updateEmailStatusBadge();
+}
+
+function updateEmailStatusBadge() {
+  const dot  = document.getElementById('email-status-dot');
+  const text = document.getElementById('email-status-text');
+  const cfg  = emailSettings;
+  if (cfg.pubkey && cfg.service && cfg.template && (cfg.amirEmail || cfg.farahEmail)) {
+    dot.className = 'email-status-dot ok';
+    const recips = [cfg.amirEmail, cfg.farahEmail].filter(Boolean).join(', ');
+    text.textContent = `Configured — sending to: ${recips}`;
+  } else {
+    dot.className = 'email-status-dot err';
+    const missing = [];
+    if (!cfg.pubkey)   missing.push('Public Key');
+    if (!cfg.service)  missing.push('Service ID');
+    if (!cfg.template) missing.push('Template ID');
+    if (!cfg.amirEmail && !cfg.farahEmail) missing.push('at least one email');
+    text.textContent = `Not ready — missing: ${missing.join(', ')}`;
+  }
+}
+
+function openSettings() {
+  populateSettingsForm();
+  document.getElementById('settings-modal').classList.add('open');
+}
+function closeSettings() { document.getElementById('settings-modal').classList.remove('open'); }
+function closeSettingsIfBg(e) { if (e.target === document.getElementById('settings-modal')) closeSettings(); }
+
+function buildEmailParams(person, action, surah, activity, punchTime, durationMins, toEmail) {
+  const surahShort = surah.replace(/\(.*\)/, '').trim();
+  return {
+    to_email:   toEmail,
+    person:     person === 'amir' ? 'Amir' : 'Farah',
+    action:     action === 'IN' ? 'IN ▶' : 'OUT ■',
+    surah:      surahShort,
+    activity,
+    punch_time: punchTime,
+    duration:   action === 'OUT' && durationMins != null ? `${durationMins} min` : '—'
+  };
+}
+
+async function sendPunchEmail(person, action, surah, activity, punchTime, durationMins) {
+  const cfg = emailSettings;
+  if (!cfg.pubkey || !cfg.service || !cfg.template) return;
+  const recipients = [cfg.amirEmail, cfg.farahEmail].filter(Boolean);
+  if (!recipients.length) return;
+
+  try {
+    await Promise.all(recipients.map(email =>
+      emailjs.send(cfg.service, cfg.template,
+        buildEmailParams(person, action, surah, activity, punchTime, durationMins, email))
+    ));
+    showToast('📧 Email sent ✓');
+  } catch (err) {
+    console.error('EmailJS error:', err);
+    showToast('Email failed — check settings ⚙️');
+  }
+}
+
+async function sendTestEmail() {
+  const pubkey   = document.getElementById('ejs-pubkey').value.trim();
+  const service  = document.getElementById('ejs-service').value.trim();
+  const template = document.getElementById('ejs-template').value.trim();
+  const amir     = document.getElementById('ejs-amir-email').value.trim();
+  const farah    = document.getElementById('ejs-farah-email').value.trim();
+  const recips   = [amir, farah].filter(Boolean);
+
+  if (!pubkey || !service || !template || !recips.length) {
+    showToast('Fill in all fields first');
+    return;
+  }
+
+  emailjs.init({ publicKey: pubkey });
+  showToast('Sending test email…');
+
+  try {
+    await Promise.all(recips.map(email =>
+      emailjs.send(service, template, {
+        to_email: email, person: 'Test', action: 'TEST ✓',
+        surah: '1. Al-Fatihah', activity: 'Test', punch_time: fmtTime(new Date()), duration: '—'
+      })
+    ));
+    showToast('✅ Test email sent! Check your inbox.');
+  } catch (err) {
+    showToast('❌ Failed: ' + (err.text || err.message || 'check credentials'));
+  }
+}
+
+let emailSettings = loadEmailSettings();
+if (emailSettings.pubkey) emailjs.init({ publicKey: emailSettings.pubkey });
 
 // ══════════════════════════════════════
 // PWA INSTALL
